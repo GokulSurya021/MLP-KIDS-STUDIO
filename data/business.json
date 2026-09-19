@@ -1,0 +1,20 @@
+{
+  "name": "MLP Kids Studio",
+  "tagline": "Capturing Little Moments, Creating Lifetime Memories",
+  "description": "Professional kids, baby, birthday, family and event photography in Samalkot.",
+  "address": "Radham Center, near Bank of India, Sriramnagar, Samalkot, Andhra Pradesh 533440",
+  "phone": "9515651718",
+  "instagram": "mlp_kids_studio_samalkot",
+  "google_maps": "https://maps.app.goo.gl/pEBoWw23bfaqc32s8",
+  "hours": {
+    "open": "10:00",
+    "close": "19:00",
+    "days": "Every day",
+    "display": "Every day, 10:00 AM – 7:00 PM"
+  },
+  "booking_advance_payment": 3000,
+  "cancellation_fee": 1000,
+  "refund_after_cancellation": 2000,
+  "max_advance_booking_days": 7,
+  "min_buffer_between_shoots_hours": 2
+}

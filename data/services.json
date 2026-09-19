@@ -1,0 +1,42 @@
+[
+  {
+    "id": "kids-photography",
+    "name": "Kids Photography",
+    "description": "Playful, vibrant sessions that capture the joy, energy, and personality of your little ones. Every frame tells their unique story.",
+    "icon": "camera",
+    "duration_hours": 2,
+    "color": "#D4AF37"
+  },
+  {
+    "id": "baby-shoots",
+    "name": "Baby Shoots",
+    "description": "Gentle, safe, and heartwarming sessions for your newborn and growing baby. Milestone moments captured with care and tenderness.",
+    "icon": "heart",
+    "duration_hours": 2,
+    "color": "#C9A96E"
+  },
+  {
+    "id": "birthday-shoots",
+    "name": "Birthday Shoots",
+    "description": "Celebrate your child's special day with magical birthday photography. From cake smashes to birthday portraits, every memory preserved.",
+    "icon": "cake",
+    "duration_hours": 2,
+    "color": "#B8860B"
+  },
+  {
+    "id": "family-portraits",
+    "name": "Family Portraits",
+    "description": "Timeless family portraits that capture the love, connection, and bond that make your family unique. Heirloom-quality images to treasure forever.",
+    "icon": "users",
+    "duration_hours": 2,
+    "color": "#DAA520"
+  },
+  {
+    "id": "events",
+    "name": "Events & Celebrations",
+    "description": "Professional event photography for all your special celebrations. From birthday parties to naming ceremonies, we capture every precious moment.",
+    "icon": "star",
+    "duration_hours": 4,
+    "color": "#FFD700"
+  }
+]

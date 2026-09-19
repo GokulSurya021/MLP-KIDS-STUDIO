@@ -1,0 +1,488 @@
+/* ==========================================
+   PAYMENT SCANNER MODAL CSS
+   ========================================== */
+
+.scanner-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(12px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.scanner-modal {
+  background: #14141c;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 20px;
+  max-width: 440px;
+  width: 100%;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 30px rgba(212, 175, 55, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+/* HEADER */
+.scanner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.scanner-header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.scanner-icon-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #D4AF37 0%, #996e00 100%);
+  color: #0d0d0d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.4);
+}
+
+.scanner-header-title h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.scanner-subtitle {
+  font-size: 0.76rem;
+  color: #8c8c9b;
+  margin: 2px 0 0 0;
+}
+
+.scanner-close-btn {
+  background: transparent;
+  border: none;
+  color: #888898;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 6px;
+  transition: color 0.2s;
+}
+
+.scanner-close-btn:hover {
+  color: #fff;
+}
+
+/* AMOUNT BANNER */
+.scanner-amount-banner {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.14) 0%, rgba(212, 175, 55, 0.04) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 12px;
+  padding: 14px 16px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.amount-label {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #c9c5bd;
+}
+
+.amount-val {
+  font-size: 1.85rem;
+  font-weight: 700;
+  font-family: 'Cinzel', serif, Georgia;
+  color: #D4AF37;
+  margin: 2px 0;
+}
+
+.amount-for {
+  font-size: 0.78rem;
+  color: #9d9da8;
+}
+
+/* MODE TABS */
+.scanner-mode-tabs {
+  display: flex;
+  gap: 8px;
+  background: #0c0c10;
+  padding: 4px;
+  border-radius: 10px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.scanner-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #9494a3;
+  padding: 8px 12px;
+  border-radius: 7px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.scanner-tab-btn.active {
+  background: #1c1c27;
+  color: #D4AF37;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* QR FRAME & LASER */
+.qr-frame-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.qr-frame {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  padding: 6px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.qr-svg-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* CORNER TARGETING BRACKETS */
+.qr-corner, .bracket {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: #D4AF37;
+  border-style: solid;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.corner-tl, .bracket-tl {
+  top: 4px;
+  left: 4px;
+  border-width: 3px 0 0 3px;
+  border-radius: 3px 0 0 0;
+}
+
+.corner-tr, .bracket-tr {
+  top: 4px;
+  right: 4px;
+  border-width: 3px 3px 0 0;
+  border-radius: 0 3px 0 0;
+}
+
+.corner-bl, .bracket-bl {
+  bottom: 4px;
+  left: 4px;
+  border-width: 0 0 3px 3px;
+  border-radius: 0 0 0 3px;
+}
+
+.corner-br, .bracket-br {
+  bottom: 4px;
+  right: 4px;
+  border-width: 0 3px 3px 0;
+  border-radius: 0 0 3px 0;
+}
+
+/* LASER SCANNING ANIMATION */
+.qr-laser {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, #ff3b30 50%, transparent 100%);
+  box-shadow: 0 0 10px #ff3b30, 0 0 16px rgba(255, 59, 48, 0.7);
+  animation: laserScan 2.4s ease-in-out infinite alternate;
+  z-index: 10;
+}
+
+@keyframes laserScan {
+  0% { top: 6px; }
+  100% { top: 186px; }
+}
+
+/* UPI ID ROW */
+.scanner-upi-id-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0e0e14;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 14px;
+}
+
+.upi-id-label {
+  font-size: 0.8rem;
+  color: #8c8c9a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.upi-id-label strong {
+  color: #fff;
+  font-family: monospace;
+}
+
+.upi-copy-btn {
+  background: transparent;
+  border: none;
+  color: #D4AF37;
+  font-size: 0.78rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.upi-copy-btn:hover {
+  background: rgba(212, 175, 55, 0.12);
+}
+
+/* SUPPORTED APPS */
+.scanner-supported-apps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.app-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.app-badge.gpay { background: rgba(66, 133, 244, 0.18); color: #8ab4f8; }
+.app-badge.phonepe { background: rgba(103, 58, 183, 0.22); color: #c084fc; }
+.app-badge.paytm { background: rgba(0, 186, 242, 0.18); color: #38bdf8; }
+.app-badge.bhim { background: rgba(255, 153, 0, 0.18); color: #fb923c; }
+
+/* CAMERA SIMULATOR VIEW */
+.scanner-camera-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.camera-viewport {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  background: #09090d;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.camera-grid {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.laser-scanner-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #10b981;
+  box-shadow: 0 0 12px #10b981, 0 0 20px rgba(16, 185, 129, 0.8);
+  animation: cameraLaser 2s linear infinite alternate;
+  z-index: 10;
+}
+
+@keyframes cameraLaser {
+  0% { top: 10px; }
+  100% { top: 205px; }
+}
+
+.camera-scan-hint {
+  position: absolute;
+  bottom: 12px;
+  text-align: center;
+  font-size: 0.72rem;
+  color: #a1a1b0;
+  background: rgba(0, 0, 0, 0.65);
+  padding: 3px 10px;
+  border-radius: 12px;
+  z-index: 15;
+}
+
+.detected-pill {
+  color: #34d399;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.camera-instruction {
+  font-size: 0.78rem;
+  color: #8c8c9a;
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* PROCESSING STATE */
+.scanner-processing-state {
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.scanner-spinner-wrap {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 16px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scanner-processing-state h4 {
+  font-size: 1.15rem;
+  color: #fff;
+  margin-bottom: 6px;
+}
+
+.scanner-processing-state p {
+  font-size: 0.82rem;
+  color: #8c8c9a;
+  max-width: 320px;
+  margin: 0 auto 16px;
+}
+
+.processing-steps {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.step-dot.active {
+  background: #D4AF37;
+  animation: pulseDot 1s infinite alternate;
+}
+
+@keyframes pulseDot {
+  from { transform: scale(0.8); opacity: 0.5; }
+  to { transform: scale(1.3); opacity: 1; }
+}
+
+/* SUCCESS STATE */
+.scanner-success-state {
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.success-check-bubble {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 14px;
+  background: rgba(16, 185, 129, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: popSuccess 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popSuccess {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.scanner-success-state h4 {
+  font-size: 1.25rem;
+  color: #34d399;
+  margin-bottom: 4px;
+}
+
+.success-amount {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.success-sub {
+  font-size: 0.82rem;
+  color: #9d9da8;
+}
+
+/* ACTIONS */
+.scanner-footer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-simulate-pay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 12px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.3);
+}
+
+.scanner-security-note {
+  font-size: 0.72rem;
+  color: #717180;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin: 0;
+}

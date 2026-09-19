@@ -1,0 +1,197 @@
+.about-page { padding-top: 80px; background: var(--bg-primary); }
+
+.about-story {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.about-story-img {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: visible;
+}
+
+.about-story-img img {
+  border-radius: var(--radius-xl);
+  width: 100%;
+  height: 520px;
+  object-fit: cover;
+}
+
+.about-story-badge {
+  position: absolute;
+  bottom: -20px;
+  right: -20px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  color: #0a0a0a;
+  padding: 20px 24px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(212,175,55,0.3);
+}
+
+.story-badge-num {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.story-badge-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.about-story-title {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  color: var(--text-primary);
+  margin-top: 12px;
+}
+
+.about-story-content p { color: var(--text-secondary); }
+
+.about-business-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.about-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.about-info-item svg { color: var(--gold); flex-shrink: 0; margin-top: 2px; }
+.about-info-item a { color: var(--text-secondary); transition: var(--transition); }
+.about-info-item a:hover { color: var(--gold); }
+
+/* Values */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.value-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 28px 20px;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.value-card:hover {
+  border-color: var(--border);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-gold);
+}
+
+.value-icon {
+  width: 56px;
+  height: 56px;
+  background: var(--gold-muted);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  margin: 0 auto 16px;
+}
+
+.value-card h3 { font-size: 1rem; color: var(--text-primary); margin-bottom: 8px; }
+.value-card p { font-size: 0.85rem; color: var(--text-muted); margin: 0; }
+
+/* Timeline */
+.timeline {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+  transform: translateX(-50%);
+}
+
+.timeline-item {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: calc(50% + 30px);
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.timeline-right {
+  justify-content: flex-start;
+  padding-right: 0;
+  padding-left: calc(50% + 30px);
+}
+
+.timeline-content {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  max-width: 340px;
+  transition: var(--transition);
+}
+
+.timeline-content:hover {
+  border-color: var(--border);
+  box-shadow: var(--shadow-gold);
+}
+
+.timeline-year {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+
+.timeline-title { font-size: 1rem; color: var(--text-primary); margin-bottom: 6px; }
+.timeline-desc { font-size: 0.85rem; color: var(--text-muted); margin: 0; }
+
+.timeline-dot {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  width: 14px;
+  height: 14px;
+  background: var(--gold);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  border: 3px solid var(--bg-primary);
+  z-index: 1;
+}
+
+@media (max-width: 900px) {
+  .about-story { grid-template-columns: 1fr; }
+  .about-story-badge { bottom: 10px; right: 10px; }
+  .values-grid { grid-template-columns: repeat(2, 1fr); }
+  .timeline-item, .timeline-right { padding: 0 0 0 32px; justify-content: flex-start; }
+  .timeline-line { left: 8px; }
+  .timeline-dot { left: 8px; }
+  .timeline-content { max-width: 100%; }
+}
+
+@media (max-width: 640px) {
+  .values-grid { grid-template-columns: 1fr 1fr; }
+}

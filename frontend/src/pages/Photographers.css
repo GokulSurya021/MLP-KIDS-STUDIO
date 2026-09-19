@@ -1,0 +1,112 @@
+.photographers-page { padding-top: 80px; background: var(--bg-primary); }
+
+.photog-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.photog-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  transition: var(--transition);
+}
+
+.photog-card:hover {
+  border-color: var(--border);
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-gold);
+}
+
+.photog-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0a0a0a;
+  margin-bottom: 4px;
+  box-shadow: 0 4px 16px rgba(212,175,55,0.3);
+}
+
+.photog-name {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.photog-spec {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.photog-location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.photog-location svg { color: var(--gold); }
+
+.photog-phone {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  padding: 7px 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  transition: var(--transition);
+  margin-top: 4px;
+}
+
+.photog-phone:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.photog-phone svg { color: var(--gold); }
+
+.photog-cta {
+  margin-top: 64px;
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+}
+
+.photog-cta h3 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.photog-cta p {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto 24px;
+}
+
+@media (max-width: 1024px) { .photog-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 768px) { .photog-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .photog-grid { grid-template-columns: 1fr 1fr; } }

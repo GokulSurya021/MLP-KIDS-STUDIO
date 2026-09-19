@@ -1,0 +1,16 @@
+{
+  "advance_payment": 3000,
+  "cancellation_fee": 1000,
+  "refund_after_cancellation": 2000,
+  "rescheduling_allowed": true,
+  "max_advance_booking_days": 7,
+  "min_buffer_between_shoots_hours": 2,
+  "business_hours": {
+    "open": "10:00",
+    "close": "19:00",
+    "days": "Every day"
+  },
+  "photographer_options": "Customer can select a specific photographer or choose 'Any Photographer'",
+  "multiple_bookings_per_day": true,
+  "statuses": ["Pending", "Confirmed", "Cancelled", "Completed"]
+}
