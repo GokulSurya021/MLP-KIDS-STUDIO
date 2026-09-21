@@ -63,17 +63,15 @@ photographers = load_json("photographers.json")
 booking_rules = load_json("booking_rules.json")
 
 # ─── Embedding Model Setup ──────────────────────────────────────────────────────
-print("[INFO] Loading sentence-transformer model (all-MiniLM-L6-v2)...", flush=True)
-try:
-    from sentence_transformers import SentenceTransformer
-    _embed_model = SentenceTransformer("all-MiniLM-L6-v2")
-    EMBED_DIM = 384
-    EMBED_AVAILABLE = True
-    print("[OK] Embedding model loaded successfully.", flush=True)
-except Exception as e:
-    print(f"[WARN] Embedding model unavailable: {e}. Falling back to local hash-based vectors.", flush=True)
-    EMBED_AVAILABLE = False
-    EMBED_DIM = 256
+# Lightweight embeddings for Render Free deployment
+# SentenceTransformer/PyTorch is intentionally disabled to keep RAM usage low.
+print("[INFO] Using lightweight hash-based embeddings...", flush=True)
+
+_embed_model = None
+EMBED_AVAILABLE = False
+EMBED_DIM = 256
+
+print("[OK] Lightweight embedding system ready.", flush=True)
 
 def local_hash_embedding(text: str) -> List[float]:
     """Deterministic dense vector from text using character n-gram hashing (fallback)."""
