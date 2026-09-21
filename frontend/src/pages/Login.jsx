@@ -94,67 +94,7 @@ const Login = () => {
           </div>
         )}
 
-        {/* Quick Fill Credentials Helper */}
-        <div style={{
-          background: 'rgba(255, 255, 255, 0.04)',
-          border: '1px solid rgba(212, 175, 55, 0.25)',
-          borderRadius: '12px',
-          padding: '12px',
-          marginBottom: '18px',
-          fontSize: '0.8rem'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-            <span style={{ color: '#d4af37', fontWeight: 600, fontSize: '0.76rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-              ⚡ Quick Fill Login Credentials:
-            </span>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-            <button
-              type="button"
-              onClick={() => {
-                setEmail('gokulsurya021@gmail.com');
-                setPassword('admin123');
-                if (errorInfo.text) setErrorInfo({ text: '', isNewUser: false });
-              }}
-              style={{
-                background: 'rgba(212, 175, 55, 0.12)',
-                border: '1px solid rgba(212, 175, 55, 0.35)',
-                color: '#fef08a',
-                padding: '7px 8px',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                textAlign: 'left',
-                fontSize: '0.74rem'
-              }}
-            >
-              <div style={{ fontWeight: 700 }}>👑 Admin Login</div>
-              <div style={{ color: '#94a3b8', fontSize: '0.68rem', fontFamily: 'monospace' }}>gokulsurya021 / admin123</div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setEmail('customer@mlpkids.com');
-                setPassword('customer123');
-                if (errorInfo.text) setErrorInfo({ text: '', isNewUser: false });
-              }}
-              style={{
-                background: 'rgba(59, 130, 246, 0.12)',
-                border: '1px solid rgba(59, 130, 246, 0.35)',
-                color: '#93c5fd',
-                padding: '7px 8px',
-                borderRadius: '8px',
-                cursor: 'pointer',
-                textAlign: 'left',
-                fontSize: '0.74rem'
-              }}
-            >
-              <div style={{ fontWeight: 700 }}>👤 Customer Demo</div>
-              <div style={{ color: '#94a3b8', fontSize: '0.68rem', fontFamily: 'monospace' }}>customer / customer123</div>
-            </button>
-          </div>
-        </div>
-
+      
         <form onSubmit={handleSubmit} className="auth-form" autoComplete="off">
           <div className="form-group">
             <label className="form-label">Email Address</label>
