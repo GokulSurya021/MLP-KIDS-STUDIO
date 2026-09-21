@@ -1,82 +1,42 @@
 [
   {
-    "id": "kids-starter",
-    "service_id": "kids-photography",
-    "name": "Starter Session",
-    "price": 3999,
-    "features": ["1 hour session", "20 edited digital photos", "1 outfit change", "Online gallery", "Print-ready files"],
-    "popular": false
+    "id": "diamond",
+    "name": "Diamond Package",
+    "price": 14800,
+    "duration": "4 hours",
+    "popular": true,
+    "features": [
+      "20 sheet album (16x24 size)",
+      "4 days delivery",
+      "1 pendrive upload raw data",
+      "4 hours shoot indoor studio",
+      "1 calendar and 1 frame"
+    ]
   },
   {
-    "id": "kids-deluxe",
-    "service_id": "kids-photography",
-    "name": "Deluxe Storybook",
-    "price": 7999,
-    "features": ["2 hour session", "50 edited digital photos", "3 outfit changes", "Premium online gallery", "Printed photo book", "USB drive"],
-    "popular": true
+    "id": "gold",
+    "name": "Gold Package",
+    "price": 10800,
+    "duration": "3 hours",
+    "popular": false,
+    "features": [
+      "13 sheets album (16x24 size)",
+      "4 days delivery",
+      "1 pendrive upload raw data",
+      "3 hours shoot",
+      "1 calendar and 1 frame"
+    ]
   },
   {
-    "id": "baby-gentle",
-    "service_id": "baby-shoots",
-    "name": "Gentle Nest Newborn",
-    "price": 4499,
-    "features": ["2 hour session", "25 edited digital photos", "Newborn posing", "Online gallery", "Print-ready files"],
-    "popular": false
-  },
-  {
-    "id": "baby-milestone",
-    "service_id": "baby-shoots",
-    "name": "Milestone Blossom",
-    "price": 7499,
-    "features": ["3 hour session", "50 edited digital photos", "Multiple milestone setups", "Premium online gallery", "Printed album", "USB drive"],
-    "popular": true
-  },
-  {
-    "id": "birthday-jubilee",
-    "service_id": "birthday-shoots",
-    "name": "Birthday Jubilee",
-    "price": 4999,
-    "features": ["2 hour session", "30 edited digital photos", "Birthday backdrop", "Online gallery", "Print-ready files"],
-    "popular": false
-  },
-  {
-    "id": "birthday-cake-smash",
-    "service_id": "birthday-shoots",
-    "name": "Deluxe Cake Smash & Splash",
-    "price": 7999,
-    "features": ["3 hour session", "60 edited digital photos", "Cake smash setup", "Splash/bath setup", "Premium gallery", "Printed album"],
-    "popular": true
-  },
-  {
-    "id": "family-connection",
-    "service_id": "family-portraits",
-    "name": "Family Connection",
-    "price": 5499,
-    "features": ["2 hour session", "30 edited digital photos", "1 location", "Online gallery", "Print-ready files"],
-    "popular": false
-  },
-  {
-    "id": "family-generations",
-    "service_id": "family-portraits",
-    "name": "Generations Legacy",
-    "price": 9499,
-    "features": ["4 hour session", "75 edited digital photos", "Multiple locations", "Premium gallery", "Large printed canvas", "Heirloom album"],
-    "popular": true
-  },
-  {
-    "id": "events-half-day",
-    "service_id": "events",
-    "name": "Celebration Half-Day",
-    "price": 6999,
-    "features": ["4 hour coverage", "100 edited photos", "1 photographer", "Online gallery", "Same-day highlights"],
-    "popular": false
-  },
-  {
-    "id": "events-grand",
-    "service_id": "events",
-    "name": "Grand Celebration Premiere",
-    "price": 12999,
-    "features": ["Full day coverage", "200+ edited photos", "2 photographers", "Video highlights", "Premium album", "USB drive", "Online gallery"],
-    "popular": true
+    "id": "silver",
+    "name": "Silver Package",
+    "price": 7000,
+    "duration": "3 hours",
+    "popular": false,
+    "features": [
+      "Only raw data",
+      "3 hours shoot",
+      "1 frame"
+    ]
   }
 ]

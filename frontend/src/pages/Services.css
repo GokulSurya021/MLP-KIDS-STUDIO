@@ -1,13 +1,13 @@
 .services-page { 
-  padding-top: 90px; 
+  padding-top: 80px; 
   background: var(--bg-primary); 
 }
 
 .page-hero {
   position: relative;
-  padding: 90px 0 70px;
-  background: rgba(10, 10, 14, 0.95);
-  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  padding: 64px 0 48px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid rgba(40, 30, 20, 0.08);
   overflow: hidden;
   text-align: center;
 }
@@ -16,9 +16,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: 
-    radial-gradient(circle at 50% 30%, rgba(212, 175, 55, 0.09) 0%, transparent 65%),
-    linear-gradient(180deg, transparent 60%, rgba(6, 6, 8, 0.9) 100%);
+  background: radial-gradient(ellipse at 50% 10%, rgba(217, 119, 6, 0.04) 0%, transparent 60%);
 }
 
 .page-hero-content {
@@ -26,31 +24,32 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .page-hero-title {
-  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-size: clamp(2.2rem, 4.2vw, 3.4rem);
   color: var(--text-primary);
   font-weight: 700;
+  letter-spacing: -0.015em;
 }
 
 .page-hero-sub {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: var(--text-secondary);
-  max-width: 580px;
+  max-width: 560px;
   margin: 0 auto;
-  line-height: 1.75;
+  line-height: 1.7;
 }
 
 /* Service detail rows */
 .service-detail {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 72px;
+  gap: 56px;
   align-items: center;
-  padding: 72px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 56px 0;
+  border-bottom: 1px solid rgba(40, 30, 20, 0.08);
 }
 
 .service-detail:last-child { border-bottom: none; }
@@ -63,11 +62,11 @@
 
 .service-detail-img {
   position: relative;
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   aspect-ratio: 4/3;
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(40, 30, 20, 0.08);
+  box-shadow: var(--shadow-card);
 }
 
 .service-detail-img img {
@@ -78,28 +77,28 @@
 }
 
 .service-detail-img:hover img { 
-  transform: scale(1.06); 
+  transform: scale(1.04); 
 }
 
 .service-detail-img-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(6, 6, 8, 0.3) 0%, transparent 60%);
+  background: linear-gradient(180deg, transparent 60%, rgba(30, 25, 21, 0.45) 100%);
 }
 
 .service-detail-icon {
   position: absolute;
-  bottom: 24px;
-  left: 24px;
-  width: 60px;
-  height: 60px;
-  background: linear-gradient(135deg, #D4AF37 0%, #F5E8C7 50%, #B8960C 100%);
-  border-radius: 16px;
+  bottom: 20px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
+  background: var(--gold-gradient);
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #070709;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  color: #FFFFFF;
+  box-shadow: 0 4px 16px rgba(40, 30, 20, 0.25);
 }
 
 .service-detail-content { 

@@ -49,7 +49,7 @@ const AdminDashboard = () => {
 
   // Only Gokul Surya is authorized to access the admin block
   const OWNER_EMAIL = 'gokulsurya021@gmail.com';
-  const isAdmin = user && (user.email?.toLowerCase() === OWNER_EMAIL.toLowerCase() || (user.role === 'admin' && user.email?.toLowerCase() === OWNER_EMAIL.toLowerCase()));
+  const isAdmin = user && user.email?.toLowerCase() === OWNER_EMAIL.toLowerCase();
 
   const [bookings, setBookings] = useState([]);
   const [stats, setStats] = useState(null);
@@ -61,7 +61,7 @@ const AdminDashboard = () => {
   const [actionLoadingId, setActionLoadingId] = useState(null);
 
   // Admin login form states
-  const [loginEmail, setLoginEmail] = useState(OWNER_EMAIL);
+  const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
@@ -160,7 +160,7 @@ const AdminDashboard = () => {
         advancePaid: !currentVal
       });
       if (res.data?.success) {
-        toast.success(!currentVal ? 'Advance marked as Paid (₹500)' : 'Advance marked as Unpaid');
+        toast.success(!currentVal ? 'Advance marked as Paid ✓' : 'Advance marked as Unpaid');
         fetchData();
       }
     } catch (err) {
@@ -321,7 +321,63 @@ const AdminDashboard = () => {
             </p>
           </div>
 
-          <form onSubmit={handleAdminLogin} className="admin-form" style={{ marginTop: '15px' }}>
+          <div style={{
+            background: 'rgba(212, 175, 55, 0.08)',
+            border: '1px solid rgba(212, 175, 55, 0.25)',
+            borderRadius: '10px',
+            padding: '10px',
+            marginTop: '12px',
+            marginBottom: '6px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '6px'
+          }}>
+            <div style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 600, textTransform: 'uppercase' }}>
+              ⚡ Quick Fill Admin Credentials:
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setLoginEmail('gokulsurya021@gmail.com');
+                  setLoginPassword('admin123');
+                }}
+                style={{
+                  background: 'rgba(212, 175, 55, 0.15)',
+                  border: '1px solid rgba(212, 175, 55, 0.35)',
+                  color: '#fef08a',
+                  padding: '6px 8px',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '0.74rem',
+                  fontWeight: 600
+                }}
+              >
+                Gokul Surya
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setLoginEmail('admin@mlpkids.com');
+                  setLoginPassword('admin123');
+                }}
+                style={{
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: '#e2e8f0',
+                  padding: '6px 8px',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '0.74rem',
+                  fontWeight: 600
+                }}
+              >
+                Studio Admin
+              </button>
+            </div>
+          </div>
+
+          <form onSubmit={handleAdminLogin} className="admin-form" style={{ marginTop: '15px' }} autoComplete="off">
             <div className="admin-input-group">
               <label>Owner Email</label>
               <div className="admin-input-wrap">
@@ -330,7 +386,8 @@ const AdminDashboard = () => {
                   type="email"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder={OWNER_EMAIL}
+                  placeholder="youremail@example.com"
+                  autoComplete="off"
                   required
                 />
               </div>
@@ -345,6 +402,7 @@ const AdminDashboard = () => {
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
                   placeholder="••••••••"
+                  autoComplete="new-password"
                   required
                 />
               </div>
@@ -387,6 +445,20 @@ const AdminDashboard = () => {
                 <span className="admin-logo-text">MLP Kids Studio</span>
                 <span className="admin-badge">
                   <ShieldCheck size={13} /> ADMIN BLOCK
+                </span>
+                <span style={{
+                  background: 'rgba(245, 158, 11, 0.12)',
+                  border: '1px solid rgba(245, 158, 11, 0.3)',
+                  color: '#fbbf24',
+                  fontSize: '0.72rem',
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  🔥 Firestore Connected
                 </span>
               </div>
               <p className="admin-subtext">Order Confirmation & Studio Operations</p>
@@ -642,7 +714,7 @@ const AdminDashboard = () => {
                           className={`advance-badge ${b.advancePaid ? 'advance-paid' : 'advance-unpaid'}`}
                           title="Click to toggle advance payment status"
                         >
-                          {b.advancePaid ? '₹500 Advance Paid ✓' : 'Advance Unpaid ✗'}
+                          {b.advancePaid ? `₹${(b.paymentDetails?.amount || 3000).toLocaleString('en-IN')} Advance Paid ✓` : 'Advance Unpaid ✗'}
                         </button>
                       </div>
                     </div>

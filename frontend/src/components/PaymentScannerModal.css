@@ -1,488 +1,1223 @@
-/* ==========================================
-   PAYMENT SCANNER MODAL CSS
-   ========================================== */
+/* ==========================================================================
+   TRUSTED RAZORPAY PAYMENT PORTAL STYLES
+   ========================================================================== */
 
-.scanner-overlay {
+.rzp-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.82);
-  backdrop-filter: blur(12px);
-  z-index: 2000;
+  background: rgba(5, 12, 24, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  z-index: 999999;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
+  animation: rzpFadeIn 0.25s ease-out;
 }
 
-.scanner-modal {
-  background: #14141c;
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  border-radius: 20px;
-  max-width: 440px;
+@keyframes rzpFadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.rzp-modal {
   width: 100%;
-  padding: 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.85), 0 0 30px rgba(212, 175, 55, 0.15);
-  position: relative;
+  max-width: 460px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(12, 104, 233, 0.15);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  color: #1a202c;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  animation: rzpSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* HEADER */
-.scanner-header {
+@keyframes rzpSlideUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   RAZORPAY NAVY HEADER
+   ========================================================================== */
+.rzp-header {
+  background: linear-gradient(135deg, #072654 0%, #0c3370 100%);
+  padding: 18px 20px 14px;
+  color: #ffffff;
+  position: relative;
+  border-bottom: 2px solid #0c68e9;
+}
+
+.rzp-brand-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
-.scanner-header-title {
+.rzp-logo-badge {
   display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.rzp-lightning {
+  color: #0c68e9;
+  font-size: 1.25rem;
+  filter: drop-shadow(0 0 8px rgba(12, 104, 233, 0.8));
+}
+
+.rzp-logo-text {
+  color: #ffffff;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.rzp-trusted-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34d399;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.rzp-close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #cbd5e1;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rzp-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  transform: rotate(90deg);
+}
+
+.rzp-merchant-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.rzp-merchant-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rzp-verified-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.18);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.rzp-order-title {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 3px 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}
+
+.rzp-amount-box {
+  text-align: right;
+}
+
+.rzp-amount-label {
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+
+.rzp-amount-val {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.rzp-test-pill-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(254, 243, 199, 0.15);
+  border: 1px dashed rgba(245, 158, 11, 0.5);
+  color: #fcd34d;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: all 0.2s ease;
+}
+
+.rzp-test-pill-toggle:hover {
+  background: rgba(245, 158, 11, 0.3);
+  transform: scale(1.03);
+}
+
+.rzp-test-pill-toggle.active {
+  background: #f59e0b;
+  color: #0f172a;
+  border-style: solid;
+  border-color: #f59e0b;
+}
+
+.rzp-security-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  color: #cbd5e1;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rzp-sec-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rzp-sec-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ==========================================================================
+   TABS BAR
+   ========================================================================== */
+.rzp-tabs-bar {
+  display: flex;
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 4px;
+}
+
+.rzp-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 8px;
+  background: transparent;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.rzp-tab.active {
+  color: #0c68e9;
+  background: #ffffff;
+  border-bottom: 2px solid #0c68e9;
+  margin-bottom: -1px;
+}
+
+.rzp-tab-recommended {
+  font-size: 0.62rem;
+  background: #0c68e9;
+  color: #ffffff;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-left: 2px;
+}
+
+/* ==========================================================================
+   BODY & CONTENT
+   ========================================================================== */
+.rzp-body {
+  padding: 18px 20px;
+  background: #ffffff;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.rzp-qr-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.rzp-qr-top-note {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.rzp-timer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  padding: 4px 11px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.rzp-scan-instruction {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 2px 0 0;
+}
+
+/* QR Code Frame with User's Uploaded QR */
+.rzp-qr-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.rzp-qr-border {
+  position: relative;
+  width: 210px;
+  height: 210px;
+  background: #ffffff;
+  border: 2px solid #0c68e9;
+  border-radius: 16px;
+  padding: 8px;
+  box-shadow: 0 10px 30px rgba(12, 104, 233, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.rzp-qr-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+}
+
+/* Corner targeting brackets */
+.rzp-corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-color: #0c68e9;
+  border-style: solid;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.corner-tl { top: 4px; left: 4px; border-width: 3px 0 0 3px; border-top-left-radius: 6px; }
+.corner-tr { top: 4px; right: 4px; border-width: 3px 3px 0 0; border-top-right-radius: 6px; }
+.corner-bl { bottom: 4px; left: 4px; border-width: 0 0 3px 3px; border-bottom-left-radius: 6px; }
+.corner-br { bottom: 4px; right: 4px; border-width: 0 3px 3px 0; border-bottom-right-radius: 6px; }
+
+/* Laser scanner line */
+.rzp-scan-laser {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #0c68e9, #38bdf8, transparent);
+  box-shadow: 0 0 10px rgba(12, 104, 233, 0.8);
+  animation: rzpLaser 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  z-index: 3;
+  pointer-events: none;
+}
+
+@keyframes rzpLaser {
+  0% { top: 8%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 92%; opacity: 0; }
+}
+
+.rzp-qr-amount-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.85rem;
+  color: #334155;
+}
+
+.rzp-qr-amount-badge strong {
+  color: #0c68e9;
+  font-size: 0.95rem;
+}
+
+/* Supported UPI Apps Badges */
+.rzp-upi-apps {
+  width: 100%;
+  text-align: center;
+}
+
+.rzp-upi-label {
+  display: block;
+  font-size: 0.74rem;
+  color: #64748b;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.rzp-app-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.app-badge {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+}
+
+.badge-phonepe { background: #5f259f; color: #ffffff; }
+.badge-gpay { background: #1a73e8; color: #ffffff; }
+.badge-paytm { background: #00b9f1; color: #ffffff; }
+.badge-bhim { background: #0288d1; color: #ffffff; }
+.badge-cred { background: #111827; color: #ffffff; }
+
+/* Tap-to-copy UPI ID */
+.rzp-upi-id-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+
+.rzp-upi-id-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+}
+
+.upi-lbl { color: #64748b; font-weight: 500; }
+.upi-val { color: #0f172a; font-weight: 700; font-family: monospace; }
+
+.rzp-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rzp-copy-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+/* UTR input group */
+.rzp-utr-input-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rzp-input-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.rzp-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #0f172a;
+  background: #ffffff;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.rzp-input:focus {
+  outline: none;
+  border-color: #0c68e9;
+  box-shadow: 0 0 0 3px rgba(12, 104, 233, 0.15);
+}
+
+/* Primary Button */
+.rzp-btn {
+  width: 100%;
+  padding: 13px 20px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.rzp-btn-primary {
+  background: linear-gradient(135deg, #0c68e9 0%, #084ebb 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(12, 104, 233, 0.35);
+}
+
+.rzp-btn-primary:hover {
+  background: linear-gradient(135deg, #1574fa 0%, #0c68e9 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(12, 104, 233, 0.45);
+}
+
+/* Cards & Netbanking forms */
+.rzp-card-tab, .rzp-nb-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rzp-card-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8fafc;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.card-icons-row {
+  display: flex;
+  gap: 6px;
+}
+
+.card-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  background: #e2e8f0;
+  color: #1e293b;
+  border-radius: 4px;
+}
+
+.card-secure-text {
+  font-size: 0.72rem;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.rzp-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rzp-row-dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.rzp-nb-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  margin: 0;
+}
+
+.rzp-bank-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.rzp-bank-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rzp-bank-btn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.rzp-bank-btn.active {
+  background: #eff6ff;
+  border-color: #0c68e9;
+  color: #0c68e9;
+}
+
+/* ==========================================================================
+   PROCESSING GATEWAY VIEW
+   ========================================================================== */
+.rzp-processing-view {
+  text-align: center;
+  padding: 24px 10px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 12px;
 }
 
-.scanner-icon-badge {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #D4AF37 0%, #996e00 100%);
-  color: #0d0d0d;
+.rzp-spinner-outer {
+  position: relative;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 14px rgba(212, 175, 55, 0.4);
 }
 
-.scanner-header-title h3 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #fff;
+.rzp-spin {
+  animation: rzpSpin 1s linear infinite;
+  color: #0c68e9;
+}
+
+@keyframes rzpSpin {
+  to { transform: rotate(360deg); }
+}
+
+.rzp-proc-sub {
+  font-size: 0.84rem;
+  color: #64748b;
+  line-height: 1.45;
   margin: 0;
 }
 
-.scanner-subtitle {
-  font-size: 0.76rem;
-  color: #8c8c9b;
-  margin: 2px 0 0 0;
-}
-
-.scanner-close-btn {
-  background: transparent;
-  border: none;
-  color: #888898;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 6px;
-  transition: color 0.2s;
-}
-
-.scanner-close-btn:hover {
-  color: #fff;
-}
-
-/* AMOUNT BANNER */
-.scanner-amount-banner {
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.14) 0%, rgba(212, 175, 55, 0.04) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  border-radius: 12px;
-  padding: 14px 16px;
-  text-align: center;
-  margin-bottom: 16px;
-}
-
-.amount-label {
-  font-size: 0.74rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #c9c5bd;
-}
-
-.amount-val {
-  font-size: 1.85rem;
-  font-weight: 700;
-  font-family: 'Cinzel', serif, Georgia;
-  color: #D4AF37;
-  margin: 2px 0;
-}
-
-.amount-for {
-  font-size: 0.78rem;
-  color: #9d9da8;
-}
-
-/* MODE TABS */
-.scanner-mode-tabs {
+.rzp-proc-steps {
   display: flex;
+  flex-direction: column;
   gap: 8px;
-  background: #0c0c10;
-  padding: 4px;
-  border-radius: 10px;
-  margin-bottom: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.scanner-tab-btn {
-  flex: 1;
-  background: transparent;
-  border: none;
-  color: #9494a3;
-  padding: 8px 12px;
-  border-radius: 7px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.scanner-tab-btn.active {
-  background: #1c1c27;
-  color: #D4AF37;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-/* QR FRAME & LASER */
-.qr-frame-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 16px;
-}
-
-.qr-frame {
-  position: relative;
-  width: 200px;
-  height: 200px;
-  padding: 6px;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
-}
-
-.qr-svg-image {
+  margin-top: 10px;
   width: 100%;
-  height: 100%;
-  display: block;
+  max-width: 280px;
 }
 
-/* CORNER TARGETING BRACKETS */
-.qr-corner, .bracket {
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border-color: #D4AF37;
-  border-style: solid;
-  pointer-events: none;
-  z-index: 5;
-}
-
-.corner-tl, .bracket-tl {
-  top: 4px;
-  left: 4px;
-  border-width: 3px 0 0 3px;
-  border-radius: 3px 0 0 0;
-}
-
-.corner-tr, .bracket-tr {
-  top: 4px;
-  right: 4px;
-  border-width: 3px 3px 0 0;
-  border-radius: 0 3px 0 0;
-}
-
-.corner-bl, .bracket-bl {
-  bottom: 4px;
-  left: 4px;
-  border-width: 0 0 3px 3px;
-  border-radius: 0 0 0 3px;
-}
-
-.corner-br, .bracket-br {
-  bottom: 4px;
-  right: 4px;
-  border-width: 0 3px 3px 0;
-  border-radius: 0 0 3px 0;
-}
-
-/* LASER SCANNING ANIMATION */
-.qr-laser {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent 0%, #ff3b30 50%, transparent 100%);
-  box-shadow: 0 0 10px #ff3b30, 0 0 16px rgba(255, 59, 48, 0.7);
-  animation: laserScan 2.4s ease-in-out infinite alternate;
-  z-index: 10;
-}
-
-@keyframes laserScan {
-  0% { top: 6px; }
-  100% { top: 186px; }
-}
-
-/* UPI ID ROW */
-.scanner-upi-id-box {
+.rzp-proc-step {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background: #0e0e14;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 8px 12px;
-  margin-bottom: 14px;
-}
-
-.upi-id-label {
-  font-size: 0.8rem;
-  color: #8c8c9a;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.upi-id-label strong {
-  color: #fff;
-  font-family: monospace;
-}
-
-.upi-copy-btn {
-  background: transparent;
-  border: none;
-  color: #D4AF37;
+  gap: 8px;
   font-size: 0.78rem;
+  color: #94a3b8;
+}
+
+.rzp-proc-step.active {
+  color: #0c68e9;
   font-weight: 600;
+}
+
+.proc-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #cbd5e1;
+}
+
+.rzp-proc-step.active .proc-dot {
+  background: #0c68e9;
+  box-shadow: 0 0 8px rgba(12, 104, 233, 0.8);
+}
+
+/* Auto-Verify Live Pill */
+.rzp-auto-verify-pill {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  padding: 3px 6px;
-  border-radius: 4px;
-  transition: background 0.2s;
+  gap: 6px;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1.5px solid #93c5fd;
+  color: #1d4ed8;
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-top: 8px;
+  letter-spacing: 0.01em;
 }
 
-.upi-copy-btn:hover {
-  background: rgba(212, 175, 55, 0.12);
+.rzp-pulse-icon {
+  animation: rzpPulse 1.2s ease-in-out infinite;
+  color: #0c68e9;
 }
 
-/* SUPPORTED APPS */
-.scanner-supported-apps {
-  display: flex;
+@keyframes rzpPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.9); }
+}
+
+/* Verified Status Pill (on receipt) */
+.rzp-verified-status-pill {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-.app-badge {
-  font-size: 0.7rem;
+  gap: 6px;
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border: 1.5px solid #6ee7b7;
+  color: #065f46;
+  padding: 5px 14px;
+  border-radius: 100px;
+  font-size: 0.78rem;
   font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 6px;
+  letter-spacing: 0.02em;
 }
 
-.app-badge.gpay { background: rgba(66, 133, 244, 0.18); color: #8ab4f8; }
-.app-badge.phonepe { background: rgba(103, 58, 183, 0.22); color: #c084fc; }
-.app-badge.paytm { background: rgba(0, 186, 242, 0.18); color: #38bdf8; }
-.app-badge.bhim { background: rgba(255, 153, 0, 0.18); color: #fb923c; }
-
-/* CAMERA SIMULATOR VIEW */
-.scanner-camera-view {
+/* ==========================================================================
+   RECEIPT VIEW
+   ========================================================================== */
+.rzp-receipt-view {
+  text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 16px;
+  gap: 12px;
+  padding: 6px 0;
 }
 
-.camera-viewport {
-  position: relative;
-  width: 220px;
-  height: 220px;
-  background: #09090d;
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  overflow: hidden;
+.rzp-receipt-badge {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: #ecfdf5;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 2px solid #a7f3d0;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
 }
 
-.camera-grid {
-  position: absolute;
-  inset: 0;
-  background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-  background-size: 20px 20px;
+.rzp-receipt-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
 }
 
-.laser-scanner-line {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: #10b981;
-  box-shadow: 0 0 12px #10b981, 0 0 20px rgba(16, 185, 129, 0.8);
-  animation: cameraLaser 2s linear infinite alternate;
-  z-index: 10;
+.rzp-receipt-sub {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 0;
 }
 
-@keyframes cameraLaser {
-  0% { top: 10px; }
-  100% { top: 205px; }
-}
-
-.camera-scan-hint {
-  position: absolute;
-  bottom: 12px;
-  text-align: center;
-  font-size: 0.72rem;
-  color: #a1a1b0;
-  background: rgba(0, 0, 0, 0.65);
-  padding: 3px 10px;
+.rzp-receipt-card {
+  width: 100%;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
-  z-index: 15;
-}
-
-.detected-pill {
-  color: #34d399;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.camera-instruction {
-  font-size: 0.78rem;
-  color: #8c8c9a;
-  text-align: center;
-  margin-top: 10px;
-}
-
-/* PROCESSING STATE */
-.scanner-processing-state {
-  text-align: center;
-  padding: 30px 10px;
-}
-
-.scanner-spinner-wrap {
-  width: 70px;
-  height: 70px;
-  margin: 0 auto 16px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.scanner-processing-state h4 {
-  font-size: 1.15rem;
-  color: #fff;
-  margin-bottom: 6px;
-}
-
-.scanner-processing-state p {
-  font-size: 0.82rem;
-  color: #8c8c9a;
-  max-width: 320px;
-  margin: 0 auto 16px;
-}
-
-.processing-steps {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-}
-
-.step-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.step-dot.active {
-  background: #D4AF37;
-  animation: pulseDot 1s infinite alternate;
-}
-
-@keyframes pulseDot {
-  from { transform: scale(0.8); opacity: 0.5; }
-  to { transform: scale(1.3); opacity: 1; }
-}
-
-/* SUCCESS STATE */
-.scanner-success-state {
-  text-align: center;
-  padding: 30px 10px;
-}
-
-.success-check-bubble {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 14px;
-  background: rgba(16, 185, 129, 0.15);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: popSuccess 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes popSuccess {
-  from { transform: scale(0); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.scanner-success-state h4 {
-  font-size: 1.25rem;
-  color: #34d399;
-  margin-bottom: 4px;
-}
-
-.success-amount {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 4px;
-}
-
-.success-sub {
-  font-size: 0.82rem;
-  color: #9d9da8;
-}
-
-/* ACTIONS */
-.scanner-footer-actions {
+  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 8px;
 }
 
-.btn-simulate-pay {
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+}
+
+.receipt-label {
+  color: #64748b;
+}
+
+.receipt-value {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.receipt-amount {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #10b981;
+}
+
+.receipt-code {
+  font-family: monospace;
+  font-size: 0.8rem;
+  color: #0c68e9;
+  background: #eff6ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.rzp-receipt-actions {
+  width: 100%;
+  margin-top: 6px;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+.rzp-footer {
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.rzp-footer-trust {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rzp-sec-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.rzp-footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rzp-powered-name {
+  font-weight: 800;
+  color: #0c68e9;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 480px) {
+  .rzp-modal {
+    border-radius: 14px;
+  }
+  .rzp-header {
+    padding: 14px 16px 12px;
+  }
+  .rzp-body {
+    padding: 14px 16px;
+  }
+  .rzp-footer {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+}
+
+/* ==========================================================================
+   RAZORPAY-STYLE SUCCESS PAGE
+   ========================================================================== */
+.rzp-modal-success {
+  overflow: hidden;
+}
+
+.rzp-success-hero {
+  background: linear-gradient(160deg, #059669 0%, #047857 60%, #065f46 100%);
+  padding: 36px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.rzp-success-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.12) 0%, transparent 65%);
+}
+
+.rzp-success-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  border: 2.5px solid rgba(255, 255, 255, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  animation: rzpSuccessPop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.25);
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes rzpSuccessPop {
+  from { transform: scale(0.4); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+.rzp-success-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+}
+
+.rzp-success-amount {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.03em;
+  position: relative;
+  z-index: 1;
+}
+
+.rzp-success-verified-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  padding: 4px 14px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  position: relative;
+  z-index: 1;
+}
+
+.rzp-success-body {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  max-height: 55vh;
+  overflow-y: auto;
+}
+
+.rzp-txn-card {
+  width: 100%;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rzp-txn-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 2px 0;
+}
+
+.rzp-txn-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+}
+
+.rzp-txn-status-row {
+  font-size: 0.85rem;
+}
+
+.rzp-txn-label {
+  color: #64748b;
+}
+
+.rzp-txn-value {
+  font-weight: 600;
+  color: #0f172a;
+  text-align: right;
+  max-width: 60%;
+  word-break: break-all;
+}
+
+.rzp-txn-code {
+  font-family: monospace;
+  font-size: 0.77rem;
+  color: #0c68e9;
+  background: #eff6ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.rzp-txn-status-badge {
+  background: #ecfdf5;
+  border: 1px solid #6ee7b7;
+  color: #065f46;
+  font-weight: 800;
+  font-size: 0.78rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.03em;
+}
+
+.rzp-success-note {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.rzp-btn-success-done {
+  width: 100%;
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 13px 20px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font-weight: 700;
-  font-size: 0.9rem;
-  padding: 12px !important;
-  border-radius: 10px !important;
-  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.3);
+  transition: opacity 0.2s;
 }
 
-.scanner-security-note {
-  font-size: 0.72rem;
-  color: #717180;
-  text-align: center;
+.rzp-btn-success-done:hover {
+  opacity: 0.9;
+}
+
+.rzp-success-footer {
+  background: #f1f5f9;
+  border-top: 1px solid #e2e8f0;
+  padding: 10px 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  margin: 0;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: #64748b;
 }
+
+/* ==========================================================================
+   AUTO-DETECTION UI (QR waiting screen)
+   ========================================================================== */
+
+/* Green pulsing indicator in the security strip */
+.rzp-live-detect {
+  animation: rzpLivePulse 2s ease-in-out infinite;
+}
+
+@keyframes rzpLivePulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+/* Instruction banner above QR */
+.rzp-auto-instruction-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border: 1px solid #93c5fd;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: #1e40af;
+  line-height: 1.4;
+  width: 100%;
+}
+
+/* Waiting / listening pill below QR */
+.rzp-waiting-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1.5px solid #86efac;
+  color: #166534;
+  padding: 7px 18px;
+  border-radius: 100px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-top: 4px;
+  letter-spacing: 0.01em;
+}
+
+/* Verifying body centering */
+.rzp-verifying-body {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 32px 20px;
+}
+
+/* Check icon on completed steps */
+.proc-check {
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   REAL RAZORPAY PAY SCREEN
+   ========================================================================== */
+
+.rzp-pay-body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+/* Method preview card */
+.rzp-method-preview {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rzp-method-preview-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rzp-method-icons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rzp-method-chip {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 5px 11px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Pay Now button */
+.rzp-btn-pay-now {
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  background: linear-gradient(135deg, #0c68e9 0%, #0550c0 100%);
+  box-shadow: 0 4px 18px rgba(12, 104, 233, 0.4);
+  transition: all 0.2s ease;
+}
+
+.rzp-btn-pay-now:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(12, 104, 233, 0.5);
+}
+
+.rzp-btn-pay-now:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Inline spin for loading state */
+.rzp-spin-inline {
+  animation: rzpSpin 1s linear infinite;
+}
+
+/* Pay note below button */
+.rzp-pay-note {
+  font-size: 0.76rem;
+  color: #94a3b8;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Error banner */
+.rzp-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #dc2626;
+  font-size: 0.83rem;
+  font-weight: 500;
+}
+
+

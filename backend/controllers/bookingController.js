@@ -13,6 +13,13 @@ const parseTimeToHours = (timeStr) => {
   return h + m / 60;
 };
 
+const isOwnerAdmin = (user) => {
+  if (!user) return false;
+  if (user.role === 'admin') return true;
+  const allowed = ['gokulsurya021@gmail.com', 'admin@mlpkids.com', (process.env.ADMIN_EMAIL || '').toLowerCase()].filter(Boolean);
+  return allowed.includes(user.email?.toLowerCase());
+};
+
 const isWithinBusinessHours = (timeStr) => {
   const h = parseTimeToHours(timeStr);
   return h >= BUSINESS_OPEN && h < BUSINESS_CLOSE;
@@ -49,16 +56,22 @@ const createBooking = async (req, res) => {
       photographerId, date, time, specialRequests
     } = req.body;
 
-    // Validate required fields
-    if (!customerName || !email || !phone || !serviceId || !packageId || !date || !time) {
+    // Validate required fields — serviceId optional (falls back to 'general')
+    if (!customerName || !email || !phone || !packageId || !date || !time) {
       return res.status(400).json({ success: false, message: 'All required fields must be filled' });
     }
 
-    // Find package info
+    // Find package info — packages are now global (diamond/gold/silver)
     const pkg = packages.find(p => p.id === packageId);
-    const svc = services.find(s => s.id === serviceId);
-    if (!pkg || !svc) {
-      return res.status(400).json({ success: false, message: 'Invalid service or package' });
+    // Service is optional — 'general' is valid for global packages
+    const svc = serviceId === 'general'
+      ? { name: 'MLP Kids Studio' }
+      : services.find(s => s.id === serviceId);
+    if (!pkg) {
+      return res.status(400).json({ success: false, message: 'Invalid package selected' });
+    }
+    if (!svc) {
+      return res.status(400).json({ success: false, message: 'Invalid service selected' });
     }
 
     // Validate business hours
@@ -106,7 +119,8 @@ const createBooking = async (req, res) => {
       time,
       specialRequests: specialRequests || '',
       status: 'Pending',
-      advancePaid: Boolean(req.body.advancePaid)
+      advancePaid: Boolean(req.body.advancePaid),
+      paymentDetails: req.body.paymentDetails || undefined
     });
 
     res.status(201).json({ success: true, message: 'Booking created successfully', booking });
@@ -121,14 +135,42 @@ const payAdvanceBooking = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id);
     if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
-    if (booking.user.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    if (booking.user.toString() !== req.user._id.toString() && !isOwnerAdmin(req.user)) {
       return res.status(403).json({ success: false, message: 'Not authorized' });
     }
     booking.advancePaid = true;
+    booking.paymentDetails = {
+      gateway: 'Razorpay',
+      paymentId: req.body.paymentId || 'pay_' + Math.random().toString(36).substring(2, 12),
+      orderId: req.body.orderId || 'order_mlp_' + Math.random().toString(36).substring(2, 10),
+      method: req.body.method || 'UPI_QR',
+      utr: req.body.utr || '',
+      amount: req.body.amount || bookingRules.advance_payment || 3000,
+      paidAt: new Date()
+    };
     await booking.save();
-    res.json({ success: true, message: 'Advance payment of ₹500 confirmed via UPI scanner!', booking });
+    res.json({
+      success: true,
+      message: `Advance payment of ₹${booking.paymentDetails.amount} confirmed via Razorpay!`,
+      booking
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error confirming payment' });
+  }
+};
+
+// @route GET /api/bookings/:id/payment-status
+const getPaymentStatus = async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
+    res.json({
+      success: true,
+      advancePaid: Boolean(booking.advancePaid),
+      paymentDetails: booking.paymentDetails || null
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error checking payment status' });
   }
 };
 
@@ -147,7 +189,7 @@ const getBookingById = async (req, res) => {
   try {
     const booking = await Booking.findById(req.params.id).populate('user', 'name email');
     if (!booking) return res.status(404).json({ success: false, message: 'Booking not found' });
-    if (booking.user._id.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    if (booking.user._id.toString() !== req.user._id.toString() && !isOwnerAdmin(req.user)) {
       return res.status(403).json({ success: false, message: 'Not authorized' });
     }
     res.json({ success: true, booking });
@@ -283,7 +325,7 @@ const getBookingStatsAdmin = async (req, res) => {
       .filter(b => b.status !== 'Cancelled')
       .reduce((sum, b) => sum + (b.packagePrice || 0), 0);
 
-    const advanceCollected = advancePaid * 500; // Standard ₹500 advance
+    const advanceCollected = advancePaid * (bookingRules.advance_payment || 3000);
 
     res.json({
       success: true,
@@ -396,6 +438,7 @@ const assignPhotographerAdmin = async (req, res) => {
 module.exports = {
   createBooking,
   payAdvanceBooking,
+  getPaymentStatus,
   getMyBookings,
   getBookingById,
   cancelBooking,

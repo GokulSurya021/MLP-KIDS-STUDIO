@@ -47,7 +47,7 @@ const Footer = () => {
                 { to: '/about', label: 'About Us' },
                 { to: '/photographers', label: 'Our Team' },
                 { to: '/contact', label: 'Contact' },
-                { to: '/admin', label: '🛡️ Admin Portal' },
+                { to: '/payment', label: '💳 Pay Advance (Razorpay)' },
               ].map(({ to, label }) => (
                 <li key={to}>
                   <Link to={to} className="footer-link">{label}</Link>

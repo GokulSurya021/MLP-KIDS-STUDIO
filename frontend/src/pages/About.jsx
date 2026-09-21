@@ -3,10 +3,9 @@ import { Instagram } from '../components/Icons';
 import './About.css';
 
 const milestones = [
-  { year: '2019', title: 'Founded', desc: 'MLP Kids Studio was established with a vision to capture childhood magic.' },
-  { year: '2020', title: 'First 100 Families', desc: 'Reached our first milestone — 100 happy families served across Samalkot.' },
-  { year: '2022', title: 'Team Expansion', desc: 'Grew to a team of 11 talented photographers across Andhra Pradesh.' },
-  { year: '2024', title: '500+ Families', desc: 'Celebrated over 500 families and thousands of precious moments captured.' },
+  { year: '2026', title: 'Grand Opening', desc: 'MLP Kids Studio officially launched in Samalkot, Andhra Pradesh.' },
+  { year: '2026', title: '20+ Themed Sets', desc: 'Built 20+ authentic, handcrafted physical sets with gentle baby-friendly studio lighting.' },
+  { year: '2026', title: 'Specialized Team', desc: 'Assembled a team of 11 skilled child and family photographers across Andhra Pradesh.' },
 ];
 
 const values = [
@@ -38,8 +37,8 @@ const About = () => {
                 alt="MLP Kids Studio Founder & Lead Photographer"
               />
               <div className="about-story-badge">
-                <div className="story-badge-num">500+</div>
-                <div className="story-badge-label">Happy Families</div>
+                <div className="story-badge-num">2026</div>
+                <div className="story-badge-label">Est. Studio</div>
               </div>
             </div>
             <div className="about-story-content">
@@ -47,7 +46,7 @@ const About = () => {
               <h2 className="about-story-title">More Than Just <span className="text-gradient">Photography</span></h2>
               <div className="gold-divider" style={{ margin: '20px 0' }} />
               <p>
-                MLP Kids Studio was born from a deep love for children and a passion for preserving the fleeting, magical moments of childhood. Located in the heart of Samalkot, Andhra Pradesh, we've been creating beautiful memories for families across the region.
+                Founded in 2026, MLP Kids Studio was born from a deep love for children and a passion for preserving the fleeting, magical moments of childhood. Located in the heart of Samalkot, Andhra Pradesh, our brand new facility offers an unmatched photography experience for young families.
               </p>
               <p style={{ marginTop: '16px' }}>
                 Our studio is designed to be a warm, welcoming space where children feel free to be themselves — whether that means giggling uncontrollably, exploring props, or simply being their adorable selves. We believe the most beautiful photographs are the authentic ones.
@@ -105,6 +104,50 @@ const About = () => {
                 <p>{text}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Themed Studio Sets */}
+      <section className="section" style={{ background: 'var(--bg-primary)' }}>
+        <div className="container">
+          <div className="section-header">
+            <span className="section-label">Our Creative Space</span>
+            <h2 className="section-title">Handcrafted <span>Sets & Props</span></h2>
+            <div className="gold-divider" />
+            <p className="section-subtitle" style={{ maxWidth: '640px', margin: '0 auto', color: 'var(--text-secondary)' }}>
+              Step into magical, handcrafted sets designed to inspire wonder, giggles, and unforgettable childhood portraits.
+            </p>
+          </div>
+          <div className="about-sets-grid">
+            <div className="about-set-card">
+              <img src="/images/studio/shoot-27.jpg" alt="Fairytale Cottage Setup" />
+              <div className="about-set-info">
+                <h4>Fairytale Floral Cottage</h4>
+                <p>Pastel blossoms, wooden tricycle & garden picket fence</p>
+              </div>
+            </div>
+            <div className="about-set-card">
+              <img src="/images/studio/shoot-19.jpg" alt="Crescent Moon Stage" />
+              <div className="about-set-info">
+                <h4>Moon & Starlight Sleigh</h4>
+                <p>Carved wooden cloud sleigh under a celestial night sky</p>
+              </div>
+            </div>
+            <div className="about-set-card">
+              <img src="/images/studio/shoot-17.jpg" alt="Pediatrician Doctor Clinic Setup" />
+              <div className="about-set-info">
+                <h4>Little Doctor's Clinic</h4>
+                <p>Medical scrubs, stethoscope & miniature clinic armchair</p>
+              </div>
+            </div>
+            <div className="about-set-card">
+              <img src="/images/studio/shoot-12.jpg" alt="Halloween Pumpkin Cottage" />
+              <div className="about-set-info">
+                <h4>Spooky Pumpkin Cottage</h4>
+                <p>Jack-o'-lanterns, magic cauldron & autumn lanterns</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>

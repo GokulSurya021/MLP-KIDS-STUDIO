@@ -245,7 +245,7 @@ const MyBookings = () => {
 
                     {booking.cancellationReason && (
                       <div className="cancellation-note">
-                        <strong>Cancellation Note:</strong> {booking.cancellationReason} (Fee: ₹500, Refund: ₹1,500)
+                        <strong>Cancellation Note:</strong> {booking.cancellationReason} (Fee: ₹{(rules.cancellation_fee || 1000).toLocaleString('en-IN')}, Refund: ₹{(rules.refund_after_cancellation || 2000).toLocaleString('en-IN')})
                       </div>
                     )}
                   </div>
@@ -265,7 +265,7 @@ const MyBookings = () => {
                           }}
                           onClick={() => setPaymentModal({ open: true, booking })}
                         >
-                          <QrCode className="w-3.5 h-3.5" /> Pay ₹500 Advance
+                          <QrCode className="w-3.5 h-3.5" /> Pay ₹{(rules.advance_payment || 3000).toLocaleString('en-IN')} Advance
                         </button>
                       )}
 
@@ -414,20 +414,27 @@ const MyBookings = () => {
           </div>
         )}
 
-        {/* UPI Payment Scanner Modal */}
+        {/* Trusted Razorpay Payment Portal Modal */}
         <PaymentScannerModal
           isOpen={paymentModal.open}
           onClose={() => setPaymentModal({ open: false, booking: null })}
-          amount={500}
+          amount={rules.advance_payment || 3000}
           bookingTitle={paymentModal.booking ? `${paymentModal.booking.service} - ${paymentModal.booking.package}` : 'Shoot Advance'}
-          onPaymentSuccess={async () => {
+          bookingId={paymentModal.booking?._id}
+          onPaymentSuccess={async (receipt) => {
             if (paymentModal.booking) {
               try {
-                await api.put(`/bookings/${paymentModal.booking._id}/pay-advance`);
-                toast.success('Advance payment of ₹500 verified via UPI Scanner!');
+                await api.put(`/bookings/${paymentModal.booking._id}/pay-advance`, {
+                  paymentId: receipt?.paymentId,
+                  orderId: receipt?.orderId,
+                  method: receipt?.method,
+                  utr: receipt?.utr,
+                  amount: receipt?.amount || rules.advance_payment || 3000
+                });
+                toast.success(`Advance payment of ₹${(rules.advance_payment || 3000).toLocaleString('en-IN')} confirmed via Razorpay!`);
                 fetchBookings();
               } catch (err) {
-                toast.error('Payment verified locally. Refreshing status...');
+                toast.error('Payment verified. Refreshing status...');
                 fetchBookings();
               }
             }

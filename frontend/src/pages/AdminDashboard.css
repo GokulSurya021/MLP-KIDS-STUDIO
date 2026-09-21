@@ -602,18 +602,19 @@
 .customer-contacts {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  margin-top: 2px;
+  gap: 5px;
+  margin-top: 4px;
 }
 
 .customer-contact-link {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: 0.8rem;
+  gap: 6px;
+  font-size: 0.82rem;
   color: #9f9fad;
   text-decoration: none;
   transition: color 0.15s;
+  word-break: break-all;
 }
 
 .customer-contact-link:hover {

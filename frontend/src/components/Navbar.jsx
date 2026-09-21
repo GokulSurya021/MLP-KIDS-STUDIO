@@ -1,13 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Camera, Menu, X, ChevronDown, User, LogOut, Calendar, ShieldCheck } from 'lucide-react';
+import { Camera, Menu, X, ChevronDown, User, LogOut, Calendar, ShieldCheck, Phone } from 'lucide-react';
+import { Instagram } from '../components/Icons';
 import './Navbar.css';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [pillPos, setPillPos] = useState({ left: 0, width: 0, opacity: 0 });
+  const tabRefs = useRef({});
+  const navLinksRef = useRef(null);
+
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -23,6 +28,34 @@ const Navbar = () => {
     setDropdownOpen(false);
   }, [location]);
 
+  // Measure and animate the active tab pill when location changes
+  useEffect(() => {
+    const updatePill = () => {
+      const activeEl = tabRefs.current[location.pathname];
+      if (activeEl && navLinksRef.current) {
+        const containerRect = navLinksRef.current.getBoundingClientRect();
+        const activeRect = activeEl.getBoundingClientRect();
+        setPillPos({
+          left: activeRect.left - containerRect.left,
+          width: activeRect.width,
+          opacity: 1
+        });
+      } else {
+        setPillPos(prev => ({ ...prev, opacity: 0 }));
+      }
+    };
+
+    updatePill();
+    // Re-check on next animation frame in case fonts/styles are calculating
+    const frame = requestAnimationFrame(updatePill);
+    window.addEventListener('resize', updatePill);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('resize', updatePill);
+    };
+  }, [location.pathname]);
+
   const handleLogout = () => {
     logout();
     navigate('/');
@@ -33,14 +66,13 @@ const Navbar = () => {
     { to: '/services', label: 'Services' },
     { to: '/packages', label: 'Packages' },
     { to: '/gallery', label: 'Gallery' },
-    { to: '/photographers', label: 'Photographers' },
+    { to: '/photographers', label: 'Team' },
     { to: '/about', label: 'About' },
     { to: '/contact', label: 'Contact' },
-    { to: '/doc-ai', label: 'AI Docs' },
   ];
 
   const isActive = (path) => location.pathname === path;
-  const isOwnerAdmin = user && (user.email?.toLowerCase() === 'gokulsurya021@gmail.com' || user.role === 'admin');
+  const isOwnerAdmin = user && user.email?.toLowerCase() === 'gokulsurya021@gmail.com';
 
   return (
     <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
@@ -56,10 +88,23 @@ const Navbar = () => {
           </div>
         </Link>
 
-        {/* Desktop Nav */}
-        <ul className="navbar-links">
+        {/* Desktop Nav with Sliding Tab Indicator */}
+        <ul className="navbar-links" ref={navLinksRef}>
+          <span
+            className="nav-active-pill"
+            style={{
+              transform: `translateX(${pillPos.left}px)`,
+              width: `${pillPos.width}px`,
+              opacity: pillPos.opacity,
+            }}
+          />
           {navLinks.map(({ to, label }) => (
-            <li key={to}>
+            <li
+              key={to}
+              ref={(el) => {
+                if (el) tabRefs.current[to] = el;
+              }}
+            >
               <Link
                 to={to}
                 className={`nav-link ${isActive(to) ? 'nav-link-active' : ''}`}
@@ -72,34 +117,32 @@ const Navbar = () => {
 
         {/* Auth Area */}
         <div className="navbar-auth">
+          <a href="tel:9515651718" className="nav-phone-btn" title="Call MLP Kids Studio">
+            <Phone size={13} />
+            <span>9515651718</span>
+          </a>
           {user ? (
             <>
-              <Link
-                to="/admin"
-                className="btn btn-outline"
-                style={{
-                  padding: '9px 16px',
-                  fontSize: '0.82rem',
-                  borderColor: 'rgba(212, 175, 55, 0.6)',
-                  color: '#D4AF37',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-                title="Open Admin Order Management"
-              >
-                <ShieldCheck size={15} /> Admin Portal
-              </Link>
-              <Link to="/book" className="btn btn-gold" style={{ padding: '10px 22px', fontSize: '0.85rem' }}>
-                Book a Shoot
+              {isOwnerAdmin && (
+                <Link
+                  to="/admin"
+                  className="btn btn-outline nav-admin-btn"
+                  title="Open Admin Order Management"
+                >
+                  <ShieldCheck size={14} /> Admin Portal
+                </Link>
+              )}
+              <Link to="/book" className="btn btn-gold nav-book-btn">
+                Book Shoot
               </Link>
               <div className="user-dropdown" onMouseLeave={() => setDropdownOpen(false)}>
                 <button
                   className="user-btn"
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   onMouseEnter={() => setDropdownOpen(true)}
+                  aria-label="User menu"
                 >
-                  <div className="user-avatar">{user.name?.[0]?.toUpperCase()}</div>
+                  <div className="user-avatar">{user.name?.[0]?.toUpperCase() || 'U'}</div>
                   <ChevronDown size={14} />
                 </button>
                 {dropdownOpen && (
@@ -108,9 +151,11 @@ const Navbar = () => {
                       <p className="dropdown-name">{user.name}</p>
                       <p className="dropdown-email">{user.email}</p>
                     </div>
-                    <Link to="/admin" className="dropdown-item text-gold">
-                      <ShieldCheck size={15} /> Admin Dashboard
-                    </Link>
+                    {isOwnerAdmin && (
+                      <Link to="/admin" className="dropdown-item text-gold">
+                        <ShieldCheck size={15} /> Admin Dashboard
+                      </Link>
+                    )}
                     <Link to="/my-bookings" className="dropdown-item">
                       <Calendar size={15} /> My Bookings
                     </Link>
@@ -123,27 +168,11 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link
-                to="/admin"
-                className="btn btn-outline"
-                style={{
-                  padding: '9px 14px',
-                  fontSize: '0.82rem',
-                  borderColor: 'rgba(212, 175, 55, 0.5)',
-                  color: '#D4AF37',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px'
-                }}
-                title="Admin Portal"
-              >
-                <ShieldCheck size={14} /> Admin
+              <Link to="/login" className="btn btn-ghost nav-login-btn">
+                Sign In
               </Link>
-              <Link to="/login" className="btn btn-ghost" style={{ padding: '10px 20px', fontSize: '0.85rem' }}>
-                Login
-              </Link>
-              <Link to="/book" className="btn btn-gold" style={{ padding: '10px 22px', fontSize: '0.85rem' }}>
-                Book a Shoot
+              <Link to="/book" className="btn btn-gold nav-book-btn">
+                Book Shoot
               </Link>
             </>
           )}

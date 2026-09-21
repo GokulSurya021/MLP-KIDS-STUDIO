@@ -4,15 +4,15 @@
 }
 
 .gallery-filter-wrap {
-  background: rgba(10, 10, 14, 0.85);
+  background: rgba(250, 249, 246, 0.94);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  border-bottom: 1px solid var(--border-subtle);
   padding: 16px 0;
   position: sticky;
   top: 68px;
   z-index: 50;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 20px rgba(30, 25, 21, 0.04);
 }
 
 .gallery-filters {
@@ -28,28 +28,30 @@
 .gallery-filter-btn {
   padding: 9px 22px;
   border-radius: var(--radius-pill);
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
-  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
   color: var(--text-secondary);
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
-  transition: var(--transition);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .gallery-filter-btn:hover { 
-  border-color: rgba(212, 175, 55, 0.4); 
+  border-color: var(--gold); 
   color: var(--text-primary); 
-  background: rgba(255, 255, 255, 0.06);
+  background: var(--bg-secondary);
+  transform: translateY(-1px);
 }
 
 .gallery-filter-btn.active { 
-  background: rgba(212, 175, 55, 0.15); 
+  background: var(--gold); 
   border-color: var(--gold); 
-  color: var(--gold); 
+  color: #FFFFFF; 
   font-weight: 600;
-  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.28);
+  transform: scale(1.04);
 }
 
 /* Masonry Grid */
@@ -57,6 +59,18 @@
   columns: 3;
   column-gap: 18px;
   gap: 18px;
+  animation: galleryFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes galleryFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .gallery-grid-item {
@@ -66,15 +80,16 @@
   overflow: hidden;
   cursor: pointer;
   margin-bottom: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  background: var(--bg-card);
 }
 
 .gallery-grid-item:hover {
-  border-color: rgba(212, 175, 55, 0.4);
+  border-color: var(--gold);
   transform: translateY(-4px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 25px rgba(212, 175, 55, 0.12);
+  box-shadow: var(--shadow-lg), 0 0 20px rgba(217, 119, 6, 0.15);
 }
 
 .gallery-grid-item img {
@@ -91,7 +106,7 @@
 .gallery-grid-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(6, 6, 8, 0.92) 0%, rgba(6, 6, 8, 0.2) 60%, transparent 100%);
+  background: linear-gradient(to top, rgba(30, 25, 21, 0.88) 0%, rgba(30, 25, 21, 0.15) 60%, transparent 100%);
   opacity: 0;
   transition: opacity 0.4s ease;
   display: flex;
@@ -106,15 +121,15 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  color: var(--text-primary);
+  color: #FFFFFF;
 }
 
-.gallery-grid-info svg { color: var(--gold); }
+.gallery-grid-info svg { color: var(--gold-light); }
 
 .gallery-grid-info span {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #FFFFFF;
 }
 
 .gallery-grid-cat {
@@ -122,12 +137,12 @@
   font-weight: 700 !important;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--gold-light) !important;
-  border: 1px solid rgba(212, 175, 55, 0.5);
+  color: var(--gold) !important;
+  border: 1px solid var(--border-subtle);
   padding: 4px 14px;
   border-radius: var(--radius-pill);
   width: fit-content;
-  background: rgba(8, 8, 12, 0.7);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(10px);
 }
 

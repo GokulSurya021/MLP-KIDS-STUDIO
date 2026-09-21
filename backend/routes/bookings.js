@@ -4,6 +4,7 @@ const { protect, adminOnly } = require('../middleware/auth');
 const {
   createBooking,
   payAdvanceBooking,
+  getPaymentStatus,
   getMyBookings,
   getBookingById,
   cancelBooking,
@@ -28,9 +29,11 @@ router.put('/admin/:id/assign', protect, adminOnly, assignPhotographerAdmin);
 
 // Individual booking routes
 router.get('/:id', protect, getBookingById);
+router.get('/:id/payment-status', protect, getPaymentStatus);
 router.put('/:id/cancel', protect, cancelBooking);
 router.put('/:id/reschedule', protect, rescheduleBooking);
 router.put('/:id/pay-advance', protect, payAdvanceBooking);
+
 
 module.exports = router;
 

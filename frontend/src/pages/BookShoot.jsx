@@ -5,14 +5,28 @@ import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import {
   Calendar, Clock, Camera, CheckCircle2, AlertCircle,
-  Sparkles, ArrowRight, ArrowLeft, ShieldAlert, User, Phone, Mail, QrCode
+  Sparkles, ArrowRight, ArrowLeft, ShieldAlert, User, Phone, Mail, QrCode, Lock, ShieldCheck
 } from 'lucide-react';
 import PaymentScannerModal from '../components/PaymentScannerModal';
+import { saveBookingToFirestore } from '../firebase/firestoreService';
+import { launchRazorpayGateway } from '../services/razorpayService';
 import './BookShoot.css';
 
 const TIME_SLOTS = [
   '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'
 ];
+
+const PACKAGE_IMAGES = {
+  'diamond': '/images/studio/shoot-01.jpg',
+  'gold':    '/images/studio/shoot-14.jpg',
+  'silver':  '/images/studio/shoot-06.jpg',
+};
+
+const TIER_STYLE = {
+  'diamond': { gradient: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)', emoji: '💎' },
+  'gold':    { gradient: 'linear-gradient(135deg, #D97706 0%, #B45309 100%)', emoji: '🥇' },
+  'silver':  { gradient: 'linear-gradient(135deg, #6B7280 0%, #4B5563 100%)', emoji: '🥈' },
+};
 
 const formatTime12h = (time24) => {
   const [h, m] = time24.split(':').map(Number);
@@ -26,19 +40,16 @@ const BookShoot = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const preselectedService = searchParams.get('service') || '';
   const preselectedPackage = searchParams.get('package') || '';
 
   const [step, setStep] = useState(1);
-  const [services, setServices] = useState([]);
   const [packages, setPackages] = useState([]);
   const [photographers, setPhotographers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   // Form State
-  const [selectedServiceId, setSelectedServiceId] = useState(preselectedService);
-  const [selectedPackageId, setSelectedPackageId] = useState(preselectedPackage);
+  const [selectedPackageId, setSelectedPackageId] = useState(preselectedPackage || 'diamond');
   const [selectedPhotographerId, setSelectedPhotographerId] = useState('any');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
@@ -47,7 +58,9 @@ const BookShoot = () => {
   const [phone, setPhone] = useState(user?.phone || '');
   const [specialRequests, setSpecialRequests] = useState('');
   const [advancePaid, setAdvancePaid] = useState(false);
+  const [paymentReceipt, setPaymentReceipt] = useState(null);
   const [scannerOpen, setScannerOpen] = useState(false);
+  const [payingAdvance, setPayingAdvance] = useState(false);
 
   // Date constraints: today to 7 days from now
   const today = new Date().toISOString().split('T')[0];
@@ -60,44 +73,35 @@ const BookShoot = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [srvRes, pkgRes, photogRes, ruleRes] = await Promise.all([
-          api.get('/services'),
+        const [pkgRes, photogRes, ruleRes] = await Promise.all([
           api.get('/packages'),
           api.get('/photographers'),
           api.get('/rules').catch(() => ({ data: { rules: null } }))
         ]);
-        const srvList = srvRes.data?.services || srvRes.data || [];
-        const pkgList = pkgRes.data?.packages || pkgRes.data || [];
-        const photogList = photogRes.data?.photographers || photogRes.data || [];
+        const pkgList = pkgRes.data?.packages || [];
+        const photogList = photogRes.data?.photographers || [];
 
-        setServices(srvList);
         setPackages(pkgList);
         setPhotographers(photogList);
 
-        // Auto-select initial service
-        const initialSvc = preselectedService || (srvList.length > 0 ? srvList[0].id : '');
-        if (initialSvc) {
-          setSelectedServiceId(initialSvc);
-          const availablePkgs = pkgList.filter(p => (p.service_id || p.serviceId) === initialSvc);
-          if (availablePkgs.length > 0) {
-            const initialPkg = preselectedPackage && availablePkgs.find(p => p.id === preselectedPackage)
-              ? preselectedPackage
-              : availablePkgs[0].id;
-            setSelectedPackageId(initialPkg);
-          }
+        // Pre-select package from URL or default to diamond
+        if (preselectedPackage && pkgList.find(p => p.id === preselectedPackage)) {
+          setSelectedPackageId(preselectedPackage);
+        } else if (pkgList.length > 0 && !selectedPackageId) {
+          setSelectedPackageId(pkgList[0].id);
         }
 
         if (ruleRes.data?.rules) {
           setRules(ruleRes.data.rules);
         }
       } catch (err) {
-        toast.error('Failed to load services or packages');
+        toast.error('Failed to load packages');
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, [preselectedService, preselectedPackage]);
+  }, []);
 
   // Sync user info when available
   useEffect(() => {
@@ -108,7 +112,7 @@ const BookShoot = () => {
     }
   }, [user]);
 
-  // Set default shoot date to tomorrow and default time slot
+  // Set default shoot date to tomorrow
   useEffect(() => {
     if (!selectedDate) {
       const tmrw = new Date();
@@ -120,42 +124,73 @@ const BookShoot = () => {
     }
   }, []);
 
-  const filteredPackages = packages.filter(p => !selectedServiceId || (p.service_id || p.serviceId) === selectedServiceId);
   const selectedPackage = packages.find(p => p.id === selectedPackageId);
-  const selectedService = services.find(s => s.id === selectedServiceId);
   const selectedPhotographer = photographers.find(p => p.id === selectedPhotographerId);
 
-  const handleSelectService = (svcId) => {
-    setSelectedServiceId(svcId);
-    const available = packages.filter(p => (p.service_id || p.serviceId) === svcId);
-    if (available.length > 0) {
-      setSelectedPackageId(available[0].id);
+  // ── Directly Launch Official Razorpay Payment Gateway ─────────────────────
+  const handleDirectRazorpayPay = async () => {
+    if (!customerName?.trim()) {
+      toast.error('Please enter contact name in Step 3 before paying');
+      return;
+    }
+    if (!email?.trim() || !email.includes('@')) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+    if (!phone?.trim() || phone.trim().length < 10) {
+      toast.error('Please enter a valid 10-digit mobile number');
+      return;
+    }
+
+    setPayingAdvance(true);
+    try {
+      await launchRazorpayGateway({
+        amount: rules.advance_payment || 3000,
+        bookingTitle: `MLP Studio Shoot Advance - ${selectedPackage?.name || 'Package'}`,
+        customer: {
+          name: customerName.trim(),
+          email: email.trim().toLowerCase(),
+          phone: phone.trim()
+        },
+        onSuccess: (receipt) => {
+          setAdvancePaid(true);
+          setPaymentReceipt(receipt);
+          setPayingAdvance(false);
+          toast.success(`Advance payment of ₹${(rules.advance_payment || 3000).toLocaleString('en-IN')} confirmed via official Razorpay Gateway!`);
+        },
+        onFailure: (err) => {
+          setPayingAdvance(false);
+          toast.error(err.description || err.message || 'Payment cancelled or incomplete');
+        },
+        onDismiss: () => {
+          setPayingAdvance(false);
+        }
+      });
+    } catch (err) {
+      setPayingAdvance(false);
+      toast.error(err.message || 'Could not launch payment gateway');
     }
   };
 
   const handleSubmitBooking = async () => {
-    if (!selectedServiceId || !selectedPackageId) {
-      toast.error('Please select a service and package');
+    if (!selectedPackageId) {
+      toast.error('Please select a package');
       setStep(1);
       return;
     }
-
     if (!selectedDate || !selectedTime) {
       toast.error('Please choose a date and time slot');
       setStep(2);
       return;
     }
-
     if (!customerName?.trim()) {
       toast.error('Please enter your full name');
       return;
     }
-
     if (!email?.trim() || !email.includes('@')) {
       toast.error('Please enter a valid email address');
       return;
     }
-
     if (!phone?.trim() || phone.trim().length < 10) {
       toast.error('Please enter a valid 10-digit mobile number');
       return;
@@ -167,17 +202,51 @@ const BookShoot = () => {
         customerName: customerName.trim(),
         email: email.trim().toLowerCase(),
         phone: phone.trim(),
-        serviceId: selectedServiceId,
+        serviceId: 'general',
         packageId: selectedPackageId,
         photographerId: selectedPhotographerId || 'any',
         date: selectedDate,
         time: selectedTime,
         specialRequests: specialRequests?.trim() || '',
-        advancePaid
+        advancePaid,
+        paymentDetails: paymentReceipt ? {
+          gateway: 'Razorpay',
+          paymentId: paymentReceipt.paymentId,
+          orderId: paymentReceipt.orderId,
+          method: paymentReceipt.method || 'UPI',
+          utr: paymentReceipt.utr || '',
+          amount: paymentReceipt.amount || rules.advance_payment || 3000,
+          paidAt: new Date()
+        } : undefined
       });
 
       if (res.data?.success) {
-        toast.success(advancePaid ? 'Shoot booked & ₹500 advance confirmed!' : 'Shoot booked successfully!');
+        // Automatically sync booking record to Firebase Firestore
+        try {
+          saveBookingToFirestore({
+            bookingId: res.data.booking?._id || res.data.booking?.id,
+            customerName: customerName.trim(),
+            email: email.trim().toLowerCase(),
+            phone: phone.trim(),
+            packageId: selectedPackageId,
+            packageName: selectedPackage?.name,
+            photographerId: selectedPhotographerId || 'any',
+            date: selectedDate,
+            time: selectedTime,
+            specialRequests: specialRequests?.trim() || '',
+            advancePaid,
+            advanceAmount: rules.advance_payment || 3000,
+            totalPrice: selectedPackage?.price,
+            paymentDetails: paymentReceipt || null,
+            status: 'Confirmed'
+          });
+        } catch (fErr) {
+          console.warn('Firestore sync note:', fErr);
+        }
+
+        toast.success(advancePaid
+          ? `Shoot booked! ₹${(rules.advance_payment || 3000).toLocaleString('en-IN')} advance confirmed!`
+          : 'Shoot booked successfully!');
         navigate('/my-bookings', { state: { newBooking: res.data.booking } });
       } else {
         toast.error(res.data?.message || 'Failed to complete reservation');
@@ -231,59 +300,59 @@ const BookShoot = () => {
           </div>
         </div>
 
-        {/* Step 1: Service & Package Selection */}
+        {/* ===== STEP 1: Package Selection ===== */}
         {step === 1 && (
           <div className="step-content">
-            <h2 className="step-heading">1. Choose Service & Package</h2>
+            <h2 className="step-heading">1. Choose Your Package</h2>
+            <p className="step-subheading">Select the package that fits your milestone. All packages available for any photoshoot type.</p>
 
-            {/* Service Tabs */}
-            <div className="service-tabs">
-              {services.map(svc => (
-                <button
-                  key={svc.id}
-                  className={`service-tab-btn ${selectedServiceId === svc.id ? 'active' : ''}`}
-                  onClick={() => handleSelectService(svc.id)}
-                >
-                  {svc.name}
-                </button>
-              ))}
-            </div>
-
-            {/* Package Cards */}
             <div className="package-selection-grid">
-              {filteredPackages.map(pkg => (
-                <div
-                  key={pkg.id}
-                  className={`pkg-select-card ${selectedPackageId === pkg.id ? 'selected' : ''}`}
-                  onClick={() => setSelectedPackageId(pkg.id)}
-                >
-                  <div className="pkg-select-header">
-                    <h3 className="pkg-select-name">{pkg.name}</h3>
-                    <div className="pkg-select-price">₹{pkg.price.toLocaleString('en-IN')}</div>
+              {packages.map(pkg => {
+                const tier = TIER_STYLE[pkg.id] || TIER_STYLE['silver'];
+                const isSelected = selectedPackageId === pkg.id;
+                return (
+                  <div
+                    key={pkg.id}
+                    className={`pkg-select-card ${isSelected ? 'selected' : ''}`}
+                    onClick={() => setSelectedPackageId(pkg.id)}
+                  >
+                    {/* Gradient tier bar */}
+                    <div className="pkg-select-tier-bar" style={{ background: tier.gradient }}>
+                      <span className="pkg-select-tier-label">{tier.emoji} {pkg.name}</span>
+                      {pkg.popular && <span className="pkg-select-popular-pill">⭐ Most Popular</span>}
+                    </div>
+
+                    <div className="pkg-select-cover-wrap">
+                      <img
+                        src={PACKAGE_IMAGES[pkg.id] || '/images/studio/shoot-01.jpg'}
+                        alt={pkg.name}
+                        className="pkg-select-cover-img"
+                      />
+                    </div>
+
+                    <div className="pkg-select-body">
+                      <div className="pkg-select-price-row">
+                        <span className="pkg-select-price">₹{pkg.price.toLocaleString('en-IN')}</span>
+                        <span className="pkg-select-duration">⏱ {pkg.duration}</span>
+                      </div>
+
+                      <ul className="pkg-select-features">
+                        {pkg.features.map((f, i) => (
+                          <li key={i}>
+                            <CheckCircle2 className="w-4 h-4 text-gold flex-shrink-0" />
+                            <span>{f}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className={`pkg-select-radio ${isSelected ? 'active' : ''}`}>
+                        <div className="radio-dot" />
+                        <span>{isSelected ? '✓ Selected' : 'Select Package'}</span>
+                      </div>
+                    </div>
                   </div>
-
-                  <p className="pkg-select-desc">{pkg.description}</p>
-
-                  <div className="pkg-select-meta">
-                    <span className="pkg-meta-tag"><Clock className="w-3.5 h-3.5" /> {pkg.duration}</span>
-                    <span className="pkg-meta-tag"><Camera className="w-3.5 h-3.5" /> {pkg.deliverables?.photos || 'Photos'}</span>
-                  </div>
-
-                  <ul className="pkg-select-features">
-                    {pkg.features?.slice(0, 4).map((f, i) => (
-                      <li key={i}>
-                        <CheckCircle2 className="w-4 h-4 text-gold flex-shrink-0" />
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="pkg-select-radio">
-                    <div className={`radio-dot ${selectedPackageId === pkg.id ? 'active' : ''}`} />
-                    <span>{selectedPackageId === pkg.id ? 'Selected' : 'Select Package'}</span>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Photographer Selection */}
@@ -337,7 +406,7 @@ const BookShoot = () => {
           </div>
         )}
 
-        {/* Step 2: Date & Time Selection */}
+        {/* ===== STEP 2: Date & Time ===== */}
         {step === 2 && (
           <div className="step-content">
             <h2 className="step-heading">2. Select Date & Slot</h2>
@@ -346,7 +415,6 @@ const BookShoot = () => {
             </p>
 
             <div className="datetime-layout">
-              {/* Date Picker */}
               <div className="form-group date-picker-group">
                 <label className="form-label">
                   <Calendar className="w-4 h-4 text-gold inline mr-2" />
@@ -363,7 +431,6 @@ const BookShoot = () => {
                 <span className="input-hint">Appointments available from today until {maxDate}</span>
               </div>
 
-              {/* Time Slots */}
               <div className="form-group">
                 <label className="form-label">
                   <Clock className="w-4 h-4 text-gold inline mr-2" />
@@ -384,20 +451,15 @@ const BookShoot = () => {
               </div>
             </div>
 
-            {/* Buffer Policy Notice */}
             <div className="rules-callout">
               <AlertCircle className="w-5 h-5 text-gold flex-shrink-0" />
               <div className="text-sm">
-                <strong>Studio Buffer Rule:</strong> A minimum 2-hour buffer is maintained between shoots for each photographer to allow full equipment sterilization, outfit change, and personalized setup.
+                <strong>Studio Buffer Rule:</strong> A minimum 2-hour buffer is maintained between shoots for each photographer.
               </div>
             </div>
 
             <div className="step-actions">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => setStep(1)}
-              >
+              <button type="button" className="btn btn-secondary" onClick={() => setStep(1)}>
                 <ArrowLeft className="w-4 h-4" /> Back to Packages
               </button>
               <button
@@ -412,17 +474,17 @@ const BookShoot = () => {
           </div>
         )}
 
-        {/* Step 3: Review & Personal Details */}
+        {/* ===== STEP 3: Review & Confirm ===== */}
         {step === 3 && (
           <div className="step-content">
             <h2 className="step-heading">3. Customer Details & Confirmation</h2>
 
             <div className="review-grid">
-              {/* Left Column: Customer Form */}
+              {/* Left: Customer Form */}
               <div className="customer-details-card">
-                <h3 className="sub-heading mb-4">Contact Information</h3>
+                <h3 className="sub-heading customer-details-title">Contact Information</h3>
 
-                <div className="form-group mb-3">
+                <div className="form-group customer-form-group">
                   <label className="form-label">Parent / Contact Name *</label>
                   <div className="input-wrap">
                     <User className="input-icon" />
@@ -437,7 +499,7 @@ const BookShoot = () => {
                   </div>
                 </div>
 
-                <div className="form-group mb-3">
+                <div className="form-group customer-form-group">
                   <label className="form-label">Email Address *</label>
                   <div className="input-wrap">
                     <Mail className="input-icon" />
@@ -452,7 +514,7 @@ const BookShoot = () => {
                   </div>
                 </div>
 
-                <div className="form-group mb-3">
+                <div className="form-group customer-form-group">
                   <label className="form-label">Phone Number *</label>
                   <div className="input-wrap">
                     <Phone className="input-icon" />
@@ -467,7 +529,7 @@ const BookShoot = () => {
                   </div>
                 </div>
 
-                <div className="form-group">
+                <div className="form-group customer-form-group">
                   <label className="form-label">Special Requests / Baby's Age & Themes</label>
                   <textarea
                     className="form-input form-textarea"
@@ -479,14 +541,9 @@ const BookShoot = () => {
                 </div>
               </div>
 
-              {/* Right Column: Order Summary */}
+              {/* Right: Order Summary */}
               <div className="booking-summary-card">
                 <h3 className="sub-heading mb-4">Booking Summary</h3>
-
-                <div className="summary-row">
-                  <span className="text-muted">Service</span>
-                  <span className="font-semibold text-primary">{selectedService?.name}</span>
-                </div>
 
                 <div className="summary-row">
                   <span className="text-muted">Package</span>
@@ -522,60 +579,71 @@ const BookShoot = () => {
                 <div className="deposit-box">
                   <div className="flex justify-between items-center text-sm font-semibold mb-1">
                     <span>Advance to Lock Slot:</span>
-                    <span className="text-gold">₹500</span>
+                    <span className="text-gold">₹{(rules.advance_payment || 3000).toLocaleString('en-IN')}</span>
                   </div>
                   <p className="text-xs text-muted">
-                    Balance ₹{(Math.max(0, (selectedPackage?.price || 0) - 500))?.toLocaleString('en-IN')} payable on shoot day at studio.
+                    Balance ₹{(Math.max(0, (selectedPackage?.price || 0) - (rules.advance_payment || 3000)))?.toLocaleString('en-IN')} payable on shoot day at studio.
                   </p>
 
                   {advancePaid ? (
                     <div style={{ background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.35)', padding: '10px 12px', borderRadius: '8px', marginTop: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <CheckCircle2 className="w-5 h-5 text-green flex-shrink-0" style={{ color: '#10b981' }} />
+                      <CheckCircle2 className="w-5 h-5 flex-shrink-0" style={{ color: '#10b981' }} />
                       <div>
-                        <div style={{ fontWeight: 600, color: '#34d399', fontSize: '0.84rem' }}>Advance Paid (₹500 via UPI Scanner) ✓</div>
+                        <div style={{ fontWeight: 600, color: '#34d399', fontSize: '0.84rem' }}>Advance Paid (₹{(rules.advance_payment || 3000).toLocaleString('en-IN')} via Razorpay Gateway) ✓</div>
                         <div style={{ fontSize: '0.72rem', color: '#9d9da8' }}>Your photoshoot slot priority is locked!</div>
                       </div>
                     </div>
                   ) : (
-                    <button
-                      type="button"
-                      onClick={() => setScannerOpen(true)}
-                      className="btn btn-outline btn-full"
-                      style={{
-                        borderColor: 'rgba(212, 175, 55, 0.5)',
-                        color: '#D4AF37',
-                        marginTop: '10px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px',
-                        fontSize: '0.82rem',
-                        padding: '9px 12px'
-                      }}
-                    >
-                      <QrCode size={16} /> Pay ₹500 Advance with UPI Scanner
-                    </button>
+                    <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <button
+                        type="button"
+                        onClick={handleDirectRazorpayPay}
+                        disabled={payingAdvance}
+                        className="btn btn-primary btn-full"
+                        style={{
+                          background: 'linear-gradient(135deg, #0c68e9 0%, #024ebb 100%)',
+                          boxShadow: '0 4px 14px rgba(12, 104, 233, 0.3)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '8px',
+                          fontSize: '0.9rem',
+                          fontWeight: 700,
+                          padding: '12px 14px',
+                          borderRadius: '8px'
+                        }}
+                      >
+                        {payingAdvance ? (
+                          <span className="flex items-center gap-2">
+                            <span className="spinner-sm" /> Opening Razorpay Gateway...
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-2">
+                            <ShieldCheck size={18} /> Pay ₹{(rules.advance_payment || 3000).toLocaleString('en-IN')} Advance via Razorpay
+                          </span>
+                        )}
+                      </button>
+                    </div>
                   )}
                 </div>
 
-                {/* Studio Policy Reminder */}
                 <div className="policy-notice">
                   <ShieldAlert className="w-4 h-4 text-gold flex-shrink-0" />
                   <p className="text-xs text-muted">
-                    <strong>Cancellation Terms:</strong> ₹{rules.cancellation_fee?.toLocaleString('en-IN')} cancellation fee applies. ₹{rules.refund_after_cancellation?.toLocaleString('en-IN')} of advance is refunded if cancelled.
+                    <strong>Cancellation Terms:</strong> ₹{(rules.cancellation_fee || 1000)?.toLocaleString('en-IN')} cancellation fee applies. ₹{(rules.refund_after_cancellation || 2000)?.toLocaleString('en-IN')} of advance is refunded if cancelled. Rescheduling permitted.
                   </p>
                 </div>
 
                 <div className="summary-actions">
                   <button
                     type="button"
-                    className="btn btn-primary btn-full confirm-btn"
+                    className="btn btn-gold btn-full"
                     disabled={submitting}
                     onClick={handleSubmitBooking}
                   >
                     {submitting ? (
                       <span className="flex items-center justify-center gap-2">
-                        <span className="spinner-sm" /> Confirming Booking...
+                        <span className="spinner-sm" /> Processing Reservation...
                       </span>
                     ) : (
                       <span className="flex items-center justify-center gap-2">
@@ -597,15 +665,16 @@ const BookShoot = () => {
           </div>
         )}
 
-        {/* Dummy Payment Scanner Modal */}
+        {/* Trusted Razorpay Payment Gateway Modal */}
         <PaymentScannerModal
           isOpen={scannerOpen}
           onClose={() => setScannerOpen(false)}
-          amount={500}
-          bookingTitle={`${selectedService?.name || 'Photoshoot'} - ${selectedPackage?.name || 'Package'}`}
-          onPaymentSuccess={() => {
+          amount={rules.advance_payment || 3000}
+          bookingTitle={`MLP Kids Studio - ${selectedPackage?.name || 'Package'}`}
+          onPaymentSuccess={(receipt) => {
             setAdvancePaid(true);
-            toast.success('Advance payment of ₹500 verified!');
+            setPaymentReceipt(receipt);
+            toast.success(`Advance payment of ₹${(rules.advance_payment || 3000).toLocaleString('en-IN')} confirmed via Razorpay!`);
           }}
         />
       </div>

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -15,6 +16,8 @@ import Photographers from './pages/Photographers';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import PaymentPortal from './pages/PaymentPortal';
 import BookShoot from './pages/BookShoot';
 import MyBookings from './pages/MyBookings';
 import RagChat from './pages/RagChat';
@@ -35,28 +38,50 @@ const ProtectedRoute = ({ children }) => {
 const AppRoutes = () => {
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith('/admin');
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  useEffect(() => {
+    // Reset window scroll position instantly to top on tab switch
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    
+    // Trigger route progress bar
+    setIsNavigating(true);
+    const timer = setTimeout(() => {
+      setIsNavigating(false);
+    }, 450);
+
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
 
   return (
     <>
+      {isNavigating && <div className="route-progress-bar" key={location.pathname + '_progress'} />}
       {!isAdminPath && <Navbar />}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/packages" element={<Packages />} />
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/photographers" element={<Photographers />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/rag" element={<RagChat />} />
-        <Route path="/doc-ai" element={<RagChat />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/book" element={<ProtectedRoute><BookShoot /></ProtectedRoute>} />
-        <Route path="/my-bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+      <div key={location.pathname} className="route-page-container">
+        <Routes location={location}>
+          <Route path="/" element={<Home />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/packages" element={<Packages />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/photographers" element={<Photographers />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/rag" element={<RagChat />} />
+          <Route path="/doc-ai" element={<RagChat />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/payment" element={<PaymentPortal />} />
+          <Route path="/pay" element={<PaymentPortal />} />
+          <Route path="/test-payment" element={<Navigate to="/payment" replace />} />
+          <Route path="/pay-1" element={<Navigate to="/payment" replace />} />
+          <Route path="/book" element={<ProtectedRoute><BookShoot /></ProtectedRoute>} />
+          <Route path="/my-bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </div>
       {!isAdminPath && <Footer />}
       {!isAdminPath && <SmartBook />}
     </>

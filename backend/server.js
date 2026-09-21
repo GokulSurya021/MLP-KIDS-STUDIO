@@ -16,10 +16,24 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Webhook route FIRST (needs raw body before express.json parses it)
+app.use('/api/payment/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res, next) => {
+    if (Buffer.isBuffer(req.body)) {
+      req.rawBody = req.body;
+      try { req.body = JSON.parse(req.body.toString()); } catch(_) {}
+    }
+    next();
+  },
+  require('./routes/payment')
+);
+
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api', require('./routes/data'));
 app.use('/api/bookings', require('./routes/bookings'));
+app.use('/api/payment', require('./routes/payment'));
 app.use('/api/chat', require('./routes/chat'));
 app.use('/api/rag', require('./routes/rag'));
 

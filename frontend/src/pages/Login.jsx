@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
-import { Mail, Lock, Camera, ArrowRight, Sparkles } from 'lucide-react';
+import { Mail, Lock, Camera, ArrowRight, AlertCircle, UserPlus, KeyRound } from 'lucide-react';
 import './Auth.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [errorInfo, setErrorInfo] = useState({ text: '', isNewUser: false });
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,6 +23,8 @@ const Login = () => {
       return;
     }
     setSubmitting(true);
+    setErrorInfo({ text: '', isNewUser: false });
+
     try {
       await login(email, password);
       toast.success('Welcome back to MLP Kids Studio!');
@@ -31,7 +34,22 @@ const Login = () => {
         navigate(from, { replace: true });
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Invalid email or password');
+      const isNewUser = err.response?.data?.noAccount || err.response?.status === 404;
+      let errorMsg;
+      if (isNewUser) {
+        errorMsg = err.response?.data?.message || 'No account found. New user? Please create a new account.';
+      } else {
+        errorMsg = 'Incorrect username or password';
+      }
+      
+      setErrorInfo({
+        text: errorMsg,
+        isNewUser: Boolean(isNewUser)
+      });
+
+      toast.error(errorMsg, {
+        duration: isNewUser ? 6000 : 4500
+      });
     } finally {
       setSubmitting(false);
     }
@@ -48,7 +66,96 @@ const Login = () => {
           <p className="auth-subtitle">Sign in to book sessions and manage your photo shoots</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="auth-form">
+        {errorInfo.text && (
+          <div className={`auth-alert ${errorInfo.isNewUser ? 'auth-alert-newuser' : 'auth-alert-error'}`}>
+            <div className="auth-alert-icon-box">
+              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            </div>
+            <div className="auth-alert-body">
+              <p className="auth-alert-msg">{errorInfo.text}</p>
+              {errorInfo.isNewUser ? (
+                <Link
+                  to={`/register?email=${encodeURIComponent(email)}`}
+                  state={{ email }}
+                  className="auth-alert-btn"
+                >
+                  <UserPlus className="w-4 h-4" /> Create New Account
+                </Link>
+              ) : (
+                <Link
+                  to={`/forgot-password?email=${encodeURIComponent(email)}`}
+                  state={{ email }}
+                  className="auth-alert-btn auth-alert-btn-reset"
+                >
+                  <KeyRound className="w-4 h-4" /> Reset Password?
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Quick Fill Credentials Helper */}
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.04)',
+          border: '1px solid rgba(212, 175, 55, 0.25)',
+          borderRadius: '12px',
+          padding: '12px',
+          marginBottom: '18px',
+          fontSize: '0.8rem'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+            <span style={{ color: '#d4af37', fontWeight: 600, fontSize: '0.76rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+              ⚡ Quick Fill Login Credentials:
+            </span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('gokulsurya021@gmail.com');
+                setPassword('admin123');
+                if (errorInfo.text) setErrorInfo({ text: '', isNewUser: false });
+              }}
+              style={{
+                background: 'rgba(212, 175, 55, 0.12)',
+                border: '1px solid rgba(212, 175, 55, 0.35)',
+                color: '#fef08a',
+                padding: '7px 8px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                textAlign: 'left',
+                fontSize: '0.74rem'
+              }}
+            >
+              <div style={{ fontWeight: 700 }}>👑 Admin Login</div>
+              <div style={{ color: '#94a3b8', fontSize: '0.68rem', fontFamily: 'monospace' }}>gokulsurya021 / admin123</div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('customer@mlpkids.com');
+                setPassword('customer123');
+                if (errorInfo.text) setErrorInfo({ text: '', isNewUser: false });
+              }}
+              style={{
+                background: 'rgba(59, 130, 246, 0.12)',
+                border: '1px solid rgba(59, 130, 246, 0.35)',
+                color: '#93c5fd',
+                padding: '7px 8px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                textAlign: 'left',
+                fontSize: '0.74rem'
+              }}
+            >
+              <div style={{ fontWeight: 700 }}>👤 Customer Demo</div>
+              <div style={{ color: '#94a3b8', fontSize: '0.68rem', fontFamily: 'monospace' }}>customer / customer123</div>
+            </button>
+          </div>
+        </div>
+
+        <form onSubmit={handleSubmit} className="auth-form" autoComplete="off">
           <div className="form-group">
             <label className="form-label">Email Address</label>
             <div className="input-wrap">
@@ -58,14 +165,27 @@ const Login = () => {
                 className="form-input"
                 placeholder="youremail@example.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (errorInfo.text) setErrorInfo({ text: '', isNewUser: false });
+                }}
+                autoComplete="off"
                 required
               />
             </div>
           </div>
 
           <div className="form-group">
-            <label className="form-label">Password</label>
+            <div className="form-label-row">
+              <label className="form-label">Password</label>
+              <Link 
+                to={`/forgot-password?email=${encodeURIComponent(email)}`} 
+                state={{ email }} 
+                className="forgot-password-link"
+              >
+                Forgot Password?
+              </Link>
+            </div>
             <div className="input-wrap">
               <Lock className="input-icon" />
               <input
@@ -73,7 +193,11 @@ const Login = () => {
                 className="form-input"
                 placeholder="Enter your password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (errorInfo.text && !errorInfo.isNewUser) setErrorInfo({ text: '', isNewUser: false });
+                }}
+                autoComplete="new-password"
                 required
               />
             </div>
@@ -103,19 +227,6 @@ const Login = () => {
               Create an Account
             </Link>
           </p>
-          <p style={{ fontSize: '0.82rem', color: '#888', marginTop: '6px' }}>
-            Studio Owner?{' '}
-            <Link to="/admin" className="auth-link text-gold">
-              Access Admin Portal
-            </Link>
-          </p>
-        </div>
-
-        <div className="demo-credentials">
-          <div className="demo-tag">
-            <Sparkles className="w-3.5 h-3.5 text-gold" /> Quick Access
-          </div>
-          <p className="demo-text">New here? Just register with your phone and email to get started immediately!</p>
         </div>
       </div>
     </div>
@@ -123,3 +234,4 @@ const Login = () => {
 };
 
 export default Login;
+

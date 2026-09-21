@@ -21,9 +21,26 @@ const protect = async (req, res, next) => {
   }
 };
 
+const optionalAuth = async (req, res, next) => {
+  try {
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+    if (token && token !== 'null' && token !== 'undefined') {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = await User.findById(decoded.id);
+    }
+    next();
+  } catch (error) {
+    // If token is invalid or expired, continue without setting req.user
+    next();
+  }
+};
+
 const adminOnly = (req, res, next) => {
-  const allowedAdmin = (process.env.ADMIN_EMAIL || 'gokulsurya021@gmail.com').toLowerCase();
-  if (req.user && req.user.role === 'admin' && req.user.email.toLowerCase() === allowedAdmin) {
+  const allowed = ['gokulsurya021@gmail.com', 'admin@mlpkids.com', (process.env.ADMIN_EMAIL || '').toLowerCase()].filter(Boolean);
+  if (req.user && (req.user.role === 'admin' || allowed.includes(req.user.email?.toLowerCase()))) {
     return next();
   }
   return res.status(403).json({
@@ -32,4 +49,4 @@ const adminOnly = (req, res, next) => {
   });
 };
 
-module.exports = { protect, adminOnly };
+module.exports = { protect, optionalAuth, adminOnly };

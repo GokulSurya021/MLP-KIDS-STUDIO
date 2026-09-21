@@ -195,3 +195,67 @@
 @media (max-width: 640px) {
   .values-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* Studio Sets Showcase */
+.about-sets-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 36px;
+}
+
+.about-set-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
+}
+
+.about-set-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(217, 119, 6, 0.35);
+  box-shadow: var(--shadow-deep);
+}
+
+.about-set-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.about-set-card:hover img {
+  transform: scale(1.06);
+}
+
+.about-set-info {
+  padding: 18px 16px;
+}
+
+.about-set-info h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.about-set-info p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .about-sets-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .about-sets-grid {
+    grid-template-columns: 1fr;
+  }
+}

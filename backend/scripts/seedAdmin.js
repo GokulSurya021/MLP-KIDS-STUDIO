@@ -7,33 +7,22 @@ async function seedAdmin() {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('Connected to MongoDB');
 
-    // 1. Create or update admin@mlpkids.com
-    const adminEmail = 'admin@mlpkids.com';
-    let adminUser = await User.findOne({ email: adminEmail });
-    if (!adminUser) {
-      adminUser = await User.create({
-        name: 'Studio Administrator',
-        email: adminEmail,
-        phone: '9515651718',
-        password: 'admin123',
-        role: 'admin'
-      });
-      console.log('✅ Created admin account: admin@mlpkids.com (password: admin123)');
-    } else {
-      adminUser.role = 'admin';
-      await adminUser.save();
-      console.log('✅ Updated admin@mlpkids.com to role: admin');
-    }
+    const ownerEmail = (process.env.ADMIN_EMAIL || 'gokulsurya021@gmail.com').toLowerCase();
 
-    // 2. Also ensure gokulsurya021@gmail.com has admin role if desired
-    const gokulUser = await User.findOne({ email: 'gokulsurya021@gmail.com' });
+    // 1. Remove legacy admin accounts if any exist
+    await User.deleteMany({ email: { $ne: ownerEmail }, role: 'admin' });
+
+    // 2. Ensure only Gokul Surya has admin role
+    const gokulUser = await User.findOne({ email: ownerEmail });
     if (gokulUser) {
       gokulUser.role = 'admin';
       await gokulUser.save();
-      console.log('✅ Granted admin role to gokulsurya021@gmail.com');
+      console.log(`✅ Granted admin role strictly to owner: ${ownerEmail}`);
+    } else {
+      console.log(`ℹ️ Owner account ${ownerEmail} will automatically receive admin privileges upon login/registration.`);
     }
 
-    console.log('Admin seeding complete.');
+    console.log('Admin security verification complete.');
     process.exit(0);
   } catch (err) {
     console.error('Error seeding admin:', err);

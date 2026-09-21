@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import {
   Camera, Baby, Cake, Users, Star, ChevronRight, MapPin, Phone,
-  Clock, ArrowRight, Check, Award, Heart, Zap
+  Clock, ArrowRight, Check, Award, Heart, Zap, ChevronLeft, MessageCircle
 } from 'lucide-react';
-import { Instagram } from '../components/Icons';
+import { Instagram, WhatsApp } from '../components/Icons';
 import './Home.css';
 
 const serviceIcons = {
@@ -16,26 +16,86 @@ const serviceIcons = {
   'events': Star
 };
 
+const serviceImages = {
+  'kids-photography': '/images/studio/shoot-01.jpg',
+  'baby-shoots': '/images/studio/shoot-06.jpg',
+  'birthday-shoots': '/images/studio/shoot-14.jpg',
+  'family-portraits': '/images/studio/shoot-26.jpg',
+  'events': '/images/studio/shoot-04.jpg',
+};
+
+const packagePhotos = {
+  'diamond': '/images/studio/shoot-01.jpg',
+  'gold':    '/images/studio/shoot-14.jpg',
+  'silver':  '/images/studio/shoot-06.jpg',
+};
+
+const TIER_STYLE = {
+  'diamond': { gradient: 'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)', emoji: '💎' },
+  'gold':    { gradient: 'linear-gradient(135deg, #D97706 0%, #B45309 100%)', emoji: '🥇' },
+  'silver':  { gradient: 'linear-gradient(135deg, #6B7280 0%, #4B5563 100%)', emoji: '🥈' },
+};
+
+const heroSlides = [
+  {
+    image: '/images/studio/shoot-01.jpg',
+    tag: 'Aviator & Fantasy Themes',
+    caption: 'Bespoke props, vintage planes, and cinematic lighting.',
+  },
+  {
+    image: '/images/studio/shoot-07.jpg',
+    tag: 'Magical Moon & Stars',
+    caption: 'Dreamy sets designed safely for newborn & baby milestones.',
+  },
+  {
+    image: '/images/studio/shoot-14.jpg',
+    tag: '1st Birthday Grand Celebrations',
+    caption: 'Cake smash, sailor themes, and joyful laughter forever saved.',
+  },
+  {
+    image: '/images/studio/shoot-03.jpg',
+    tag: 'Fairytale Garden Dreams',
+    caption: 'Enchanting floral backdrops and whimsical childhood wonder.',
+  },
+];
+
 const galleryImages = [
-  { id: 1, src: '/images/baby-chef.jpg', cat: 'Baby Shoots' },
-  { id: 2, src: '/images/baby-clouds-moon.jpg', cat: 'Dreamy Moon Theme' },
-  { id: 3, src: '/images/krishna-smiling.jpg', cat: 'Devotional Shoots' },
-  { id: 4, src: '/images/birthday-panda-one.jpg', cat: '1st Birthday Shoots' },
-  { id: 5, src: '/images/kids-fairytale-garden.jpg', cat: 'Kids Photography' },
-  { id: 6, src: '/images/baby-durga-blessing.jpg', cat: 'Blessing Moments' },
+  { id: 1, src: '/images/studio/shoot-01.jpg', cat: 'Aviator Dreams' },
+  { id: 2, src: '/images/studio/shoot-07.jpg', cat: 'Moon & Stars Sleigh' },
+  { id: 3, src: '/images/studio/shoot-02.jpg', cat: 'Safari Adventure' },
+  { id: 4, src: '/images/studio/shoot-14.jpg', cat: '1st Birthday Sailor' },
+  { id: 5, src: '/images/studio/shoot-05.jpg', cat: 'Little Chef Studio' },
+  { id: 6, src: '/images/studio/shoot-06.jpg', cat: 'Newborn Serenity' },
+  { id: 7, src: '/images/studio/shoot-03.jpg', cat: 'Fairytale Garden' },
+  { id: 8, src: '/images/studio/shoot-04.jpg', cat: 'Rockstar Baby' },
+  { id: 9, src: '/images/studio/shoot-08.jpg', cat: 'Princess Vanity' },
+  { id: 10, src: '/images/studio/shoot-10.jpg', cat: 'Autumn Swing' },
+  { id: 11, src: '/images/studio/shoot-13.jpg', cat: 'Little Krishna' },
+  { id: 12, src: '/images/studio/shoot-26.jpg', cat: 'Family Heirloom' },
+];
+
+
+const instagramGrid = [
+  { id: 1, src: '/images/studio/shoot-02.jpg', tag: 'Safari Toddler' },
+  { id: 2, src: '/images/studio/shoot-05.jpg', tag: 'Little Masterchef' },
+  { id: 3, src: '/images/studio/shoot-08.jpg', tag: 'Princess Studio' },
+  { id: 4, src: '/images/studio/shoot-10.jpg', tag: 'Autumn Fantasy' },
+  { id: 5, src: '/images/studio/shoot-13.jpg', tag: 'Little Krishna' },
+  { id: 6, src: '/images/studio/shoot-24.jpg', tag: 'Birthday Jubilee' },
 ];
 
 const whyUs = [
-  { icon: Award, title: 'Professional Excellence', text: 'Award-winning photography with years of experience capturing childhood magic.' },
+  { icon: Award, title: 'Modern 2026 Studio', text: 'Brand new, state-of-the-art photography studio in Samalkot equipped with high-end cameras, gentle baby-safe lighting, and creative themes.' },
   { icon: Heart, title: 'Child-Friendly Studio', text: 'A warm, safe, and playful environment designed to make children comfortable and natural.' },
-  { icon: Zap, title: 'Quick Turnaround', text: 'Professionally edited photos delivered fast. Your memories, without the wait.' },
-  { icon: Camera, title: 'Premium Equipment', text: 'State-of-the-art cameras, lenses, and studio lighting for stunning, cinematic results.' },
+  { icon: Zap, title: 'Quick 4-Day Turnaround', text: 'Album and high-res raw data delivered promptly in 4 days. Your memories, without the wait.' },
+  { icon: Camera, title: 'Handcrafted Sets & Props', text: 'Over 20+ authentic themed physical sets: Aviator, Moon & Stars, Safari, Chef, and Royal Krishna.' },
 ];
 
 const Home = () => {
   const [services, setServices] = useState([]);
   const [packages, setPackages] = useState([]);
   const [heroLoaded, setHeroLoaded] = useState(false);
+  const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
     api.get('/services').then(r => setServices(r.data.services)).catch(() => {});
@@ -43,32 +103,43 @@ const Home = () => {
     setTimeout(() => setHeroLoaded(true), 100);
   }, []);
 
-  const featuredPackages = packages.filter(p => p.popular).slice(0, 3);
+  // Auto rotate hero carousel
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide(prev => (prev + 1) % heroSlides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Show all 3 packages on home page
+  const featuredPackages = packages.slice(0, 3);
+
+  const prevSlide = () => {
+    setActiveSlide(prev => (prev - 1 + heroSlides.length) % heroSlides.length);
+  };
+
+  const nextSlide = () => {
+    setActiveSlide(prev => (prev + 1) % heroSlides.length);
+  };
 
   return (
     <div className="home">
-      {/* ========== HERO ========== */}
+      {/* ========== HERO WITH PHOTO CAROUSEL ========== */}
       <section className="hero">
-        <div className="hero-bg">
-          <img
-            src="/images/studio-kitchen-setup.jpg"
-            alt="MLP Kids Studio - Professional Photography"
-            className="hero-bg-img"
-          />
-          <div className="hero-overlay" />
-          <div className="hero-particles">
-            {[...Array(20)].map((_, i) => (
-              <div
-                key={i}
-                className="particle"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 5}s`,
-                  animationDuration: `${3 + Math.random() * 4}s`
-                }}
+        <div className="hero-bg-carousel">
+          {heroSlides.map((slide, idx) => (
+            <div
+              key={idx}
+              className={`hero-bg-slide ${idx === activeSlide ? 'active' : ''}`}
+            >
+              <img
+                src={slide.image}
+                alt={`MLP Kids Studio - ${slide.tag}`}
+                className="hero-bg-img"
               />
-            ))}
-          </div>
+            </div>
+          ))}
+          <div className="hero-overlay" />
         </div>
 
         <div className={`hero-content container ${heroLoaded ? 'hero-loaded' : ''}`}>
@@ -76,30 +147,67 @@ const Home = () => {
             <Camera size={14} />
             <span>Professional Photography Studio · Samalkot</span>
           </div>
+
           <h1 className="hero-title">
             <span className="hero-title-mlp">MLP</span>{' '}
             <span className="hero-title-kids">Kids Studio</span>
           </h1>
+
           <p className="hero-tagline">
             "Capturing Little Moments,<br />
             <em>Creating Lifetime Memories"</em>
           </p>
+
           <p className="hero-description">
-            Professional kids, baby, birthday, family and event photography in Samalkot, Andhra Pradesh.
+            Samalkot's premier studio for kids, babies, cake smash, family portraits, and milestone photography. Featuring handcrafted sets, gentle lighting, and certified child photographers.
           </p>
+
+
+
+          {/* Quick contact / phone call banner right in hero */}
+          <div className="hero-phone-strip">
+            <a href="tel:9515651718" className="hero-phone-link">
+              <Phone size={16} className="hero-phone-icon" />
+              <span>Direct Call: <strong>9515651718</strong></span>
+            </a>
+            <span className="hero-phone-divider">•</span>
+            <a
+              href="https://wa.me/919515651718?text=Hi%20MLP%20Kids%20Studio%2C%20I%20would%20like%20to%20inquire%20about%20booking%20a%20photoshoot!"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hero-whatsapp-link"
+            >
+              <WhatsApp size={16} />
+              <span>WhatsApp: <strong>9515651718</strong></span>
+            </a>
+          </div>
+
           <div className="hero-actions">
             <Link to="/book" className="btn btn-gold hero-btn">
               <Camera size={18} /> Book a Shoot
             </Link>
-            <Link to="/packages" className="btn btn-outline hero-btn">
-              Explore Packages <ArrowRight size={16} />
-            </Link>
+            <a href="tel:9515651718" className="btn btn-call hero-btn">
+              <Phone size={18} /> Call: 9515651718
+            </a>
+            <a
+              href="https://wa.me/919515651718?text=Hi%20MLP%20Kids%20Studio%2C%20I%20would%20like%20to%20inquire%20about%20booking%20a%20photoshoot!"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-whatsapp hero-btn"
+            >
+              <WhatsApp size={18} /> WhatsApp Chat
+            </a>
           </div>
 
           <div className="hero-stats">
             <div className="hero-stat">
-              <span className="hero-stat-num">500+</span>
-              <span className="hero-stat-label">Happy Families</span>
+              <span className="hero-stat-num">2026</span>
+              <span className="hero-stat-label">Est. Studio</span>
+            </div>
+            <div className="hero-stat-divider" />
+            <div className="hero-stat">
+              <span className="hero-stat-num">20+</span>
+              <span className="hero-stat-label">Custom Themes</span>
             </div>
             <div className="hero-stat-divider" />
             <div className="hero-stat">
@@ -108,15 +216,30 @@ const Home = () => {
             </div>
             <div className="hero-stat-divider" />
             <div className="hero-stat">
-              <span className="hero-stat-num">5</span>
-              <span className="hero-stat-label">Services</span>
-            </div>
-            <div className="hero-stat-divider" />
-            <div className="hero-stat">
-              <span className="hero-stat-num">5★</span>
-              <span className="hero-stat-label">Rated</span>
+              <span className="hero-stat-num">4-Day</span>
+              <span className="hero-stat-label">Fast Delivery</span>
             </div>
           </div>
+        </div>
+
+        {/* Hero Carousel Navigation Controls */}
+        <div className="hero-carousel-controls">
+          <button onClick={prevSlide} className="hero-nav-btn" aria-label="Previous Slide">
+            <ChevronLeft size={20} />
+          </button>
+          <div className="hero-dots">
+            {heroSlides.map((_, i) => (
+              <button
+                key={i}
+                className={`hero-dot ${i === activeSlide ? 'active' : ''}`}
+                onClick={() => setActiveSlide(i)}
+                aria-label={`Go to slide ${i + 1}`}
+              />
+            ))}
+          </div>
+          <button onClick={nextSlide} className="hero-nav-btn" aria-label="Next Slide">
+            <ChevronRight size={20} />
+          </button>
         </div>
 
         <div className="hero-scroll-hint">
@@ -135,7 +258,7 @@ const Home = () => {
             <h2 className="section-title">Our <span>Photography Services</span></h2>
             <div className="gold-divider" />
             <p className="section-subtitle">
-              From newborn babies to lively family celebrations — we specialize in capturing every precious milestone.
+              From newborn babies to lively family celebrations — we specialize in capturing every precious milestone with authentic setups and custom props.
             </p>
           </div>
 
@@ -144,8 +267,15 @@ const Home = () => {
               const Icon = serviceIcons[svc.id] || Camera;
               return (
                 <Link to="/services" key={svc.id} className="service-card" style={{ animationDelay: `${i * 0.1}s` }}>
+                  <div className="service-card-img-wrap">
+                    <img
+                      src={serviceImages[svc.id] || '/images/studio/shoot-01.jpg'}
+                      alt={svc.name}
+                      className="service-card-img"
+                    />
+                  </div>
                   <div className="service-icon-wrap" style={{ '--svc-color': svc.color }}>
-                    <Icon size={28} strokeWidth={1.5} />
+                    <Icon size={24} strokeWidth={1.5} />
                   </div>
                   <h3 className="service-name">{svc.name}</h3>
                   <p className="service-desc">{svc.description}</p>
@@ -164,44 +294,57 @@ const Home = () => {
         <div className="packages-bg" />
         <div className="container">
           <div className="section-header">
-            <span className="section-label">Pricing</span>
-            <h2 className="section-title">Featured <span>Packages</span></h2>
+            <span className="section-label">Studio Packages</span>
+            <h2 className="section-title">Package <span>Information & Inclusions</span></h2>
             <div className="gold-divider" />
-            <p className="section-subtitle">Transparent, all-inclusive pricing. No hidden fees.</p>
+            <p className="section-subtitle">
+              Complete package details for Diamond, Gold, and Silver sessions. Lock your preferred date with ₹3,000 advance.
+            </p>
           </div>
 
           <div className="packages-grid">
-            {featuredPackages.map((pkg, i) => {
-              const svcName = services.find(s => s.id === pkg.service_id)?.name || '';
+            {featuredPackages.map((pkg) => {
+              const tier = TIER_STYLE[pkg.id] || TIER_STYLE['silver'];
               return (
                 <div key={pkg.id} className="package-card">
-                  <div className="package-badge-popular">⭐ Popular</div>
-                  <div className="package-service">{svcName}</div>
-                  <h3 className="package-name">{pkg.name}</h3>
-                  <div className="package-price">
-                    <span className="price-symbol">₹</span>
-                    <span className="price-amount">{pkg.price.toLocaleString('en-IN')}</span>
+                  {/* Tier header bar */}
+                  <div className="package-tier-bar" style={{ background: tier.gradient }}>
+                    <span className="package-tier-label">{tier.emoji} {pkg.name}</span>
+                    {pkg.popular && (
+                      <span className="package-badge-popular">⭐ Most Popular</span>
+                    )}
                   </div>
-                  <ul className="package-features">
-                    {pkg.features.map((f, j) => (
-                      <li key={j}>
-                        <Check size={14} className="feature-check" />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link to="/book" className="btn btn-gold" style={{ width: '100%' }}>
-                    Book This Package
-                  </Link>
+                  <div className="package-card-img-wrap">
+                    <img
+                      src={packagePhotos[pkg.id] || '/images/studio/shoot-01.jpg'}
+                      alt={pkg.name}
+                      className="package-card-img"
+                    />
+                  </div>
+                  <div className="package-card-body">
+                    <div className="package-price">
+                      <span className="price-symbol">₹</span>
+                      <span className="price-amount">{pkg.price.toLocaleString('en-IN')}</span>
+                      <span className="price-per">/ session</span>
+                    </div>
+                    <div className="package-duration-row">
+                      <span>⏱ {pkg.duration} Shoot</span>
+                    </div>
+                    <ul className="package-features">
+                      {pkg.features.map((f, j) => (
+                        <li key={j}>
+                          <Check size={14} className="feature-check" />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+                    <Link to={`/book?package=${pkg.id}`} className={`btn ${pkg.popular ? 'btn-gold' : 'btn-outline'}`} style={{ width: '100%' }}>
+                      Book {pkg.name.replace(' Package','')}
+                    </Link>
+                  </div>
                 </div>
               );
             })}
-          </div>
-
-          <div className="text-center mt-8">
-            <Link to="/packages" className="btn btn-outline">
-              View All Packages <ArrowRight size={16} />
-            </Link>
           </div>
         </div>
       </section>
@@ -210,9 +353,12 @@ const Home = () => {
       <section className="section gallery-section">
         <div className="container">
           <div className="section-header">
-            <span className="section-label">Our Work</span>
-            <h2 className="section-title">A Glimpse of Our <span>Gallery</span></h2>
+            <span className="section-label">Real Client Shoots</span>
+            <h2 className="section-title">A Glimpse of Our <span>Real Studio Work</span></h2>
             <div className="gold-divider" />
+            <p className="section-subtitle">
+              100% genuine photos captured right here in our Samalkot studio.
+            </p>
           </div>
 
           <div className="gallery-masonry">
@@ -231,7 +377,7 @@ const Home = () => {
 
           <div className="text-center mt-8">
             <Link to="/gallery" className="btn btn-outline">
-              View Full Gallery <ArrowRight size={16} />
+              Explore All 27+ Studio Themes <ArrowRight size={16} />
             </Link>
           </div>
         </div>
@@ -259,6 +405,47 @@ const Home = () => {
         </div>
       </section>
 
+      {/* ========== INSTAGRAM SHOWCASE STRIP ========== */}
+      <section className="instagram-showcase-section">
+        <div className="container">
+          <div className="instagram-header">
+            <div className="instagram-title-wrap">
+              <Instagram size={28} className="ig-icon" />
+              <div>
+                <h3 className="ig-heading">Follow Our Journey on Instagram</h3>
+                <p className="ig-subheading">Catch daily behind-the-scenes, reels & newborn adorable moments</p>
+              </div>
+            </div>
+            <a
+              href="https://www.instagram.com/mlp_kids_studio_samalkot"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-outline ig-follow-btn"
+            >
+              @mlp_kids_studio_samalkot <ArrowRight size={16} />
+            </a>
+          </div>
+
+          <div className="instagram-strip">
+            {instagramGrid.map((post) => (
+              <a
+                key={post.id}
+                href="https://www.instagram.com/mlp_kids_studio_samalkot"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ig-strip-item"
+              >
+                <img src={post.src} alt={post.tag} loading="lazy" />
+                <div className="ig-strip-overlay">
+                  <Instagram size={22} />
+                  <span>{post.tag}</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ========== BOOKING CTA ========== */}
       <section className="cta-section">
         <div className="cta-bg" />
@@ -267,13 +454,21 @@ const Home = () => {
             <span className="section-label">Ready to Create Memories?</span>
             <h2 className="cta-title">Book Your <span>Dream Shoot</span> Today</h2>
             <p className="cta-text">
-              Secure your session with just ₹500 advance. Instant confirmation & online reservation.
+              Lock your preferred studio slot with ₹3,000 advance. Free rescheduling up to 24 hours prior. Fast 4-day delivery of your album and raw files!
             </p>
             <div className="cta-actions">
               <Link to="/book" className="btn btn-gold">
                 <Camera size={18} /> Book a Shoot Now
               </Link>
-              <a href="tel:9515651718" className="btn btn-outline">
+              <a
+                href="https://wa.me/919515651718?text=Hi%20MLP%20Kids%20Studio%2C%20I%20want%20to%20book%20a%20photoshoot%20slot!"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-whatsapp-cta"
+              >
+                <WhatsApp size={18} /> Chat on WhatsApp
+              </a>
+              <a href="tel:9515651718" className="btn btn-cta-call">
                 <Phone size={18} /> Call: 9515651718
               </a>
             </div>
@@ -305,6 +500,21 @@ const Home = () => {
             </div>
             <div className="contact-strip-divider" />
             <div className="contact-strip-item">
+              <WhatsApp size={20} className="cs-icon" style={{ color: '#25D366' }} />
+              <div>
+                <div className="cs-label">WhatsApp Quick Booking</div>
+                <a
+                  href="https://wa.me/919515651718?text=Hi%20MLP%20Kids%20Studio%2C%20I%20would%20like%20to%20book%20a%20shoot"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cs-value"
+                >
+                  9515651718
+                </a>
+              </div>
+            </div>
+            <div className="contact-strip-divider" />
+            <div className="contact-strip-item">
               <MapPin size={20} className="cs-icon" />
               <div>
                 <div className="cs-label">Location</div>
@@ -316,14 +526,6 @@ const Home = () => {
                 >
                   Samalkot, AP
                 </a>
-              </div>
-            </div>
-            <div className="contact-strip-divider" />
-            <div className="contact-strip-item">
-              <Clock size={20} className="cs-icon" />
-              <div>
-                <div className="cs-label">Hours</div>
-                <span className="cs-value">Every day, 10 AM – 7 PM</span>
               </div>
             </div>
             <div className="contact-strip-divider" />

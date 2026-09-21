@@ -3,18 +3,33 @@ import { X, ZoomIn } from 'lucide-react';
 import './Gallery.css';
 
 const galleryData = [
-  { id: 1, category: 'kids', src: '/images/baby-chef.jpg', title: 'Little Chef Adventure', size: 'wide' },
-  { id: 2, category: 'baby', src: '/images/baby-clouds-moon.jpg', title: 'Moon & Starlight Dream', size: 'tall' },
-  { id: 3, category: 'birthday', src: '/images/birthday-panda-one.jpg', title: 'First Birthday Panda Celebration', size: 'normal' },
-  { id: 4, category: 'family', src: '/images/baby-durga-blessing.jpg', title: 'Divine Blessings & Grace', size: 'tall' },
-  { id: 5, category: 'kids', src: '/images/kids-fairytale-garden.jpg', title: 'Fairytale Garden Princess', size: 'normal' },
-  { id: 6, category: 'events', src: '/images/studio-kitchen-setup.jpg', title: 'Custom Studio Kitchen Setup', size: 'wide' },
-  { id: 7, category: 'baby', src: '/images/baby-warm-blessing.jpg', title: 'Golden Warmth Newborn Moments', size: 'normal' },
-  { id: 8, category: 'kids', src: '/images/krishna-smiling.jpg', title: 'Little Krishna Smiles', size: 'wide' },
-  { id: 9, category: 'birthday', src: '/images/birthday-panda-one.jpg', title: 'Celebration Stage & Props', size: 'tall' },
-  { id: 10, category: 'family', src: '/images/krishna-looking-up.jpg', title: 'Devotional Heritage Portrait', size: 'wide' },
-  { id: 11, category: 'events', src: '/images/studio-kitchen-setup.jpg', title: 'Themed Studio Experience', size: 'normal' },
-  { id: 12, category: 'baby', src: '/images/baby-durga-blessing.jpg', title: 'Innocence & Devotional Grace', size: 'normal' },
+  { id: 1, category: 'kids', src: '/images/studio/shoot-01.jpg', title: 'Aviator Dreams & Cloud Arch', size: 'wide' },
+  { id: 2, category: 'kids', src: '/images/studio/shoot-02.jpg', title: 'Jungle Safari Waterfall Camp', size: 'wide' },
+  { id: 3, category: 'kids', src: '/images/studio/shoot-03.jpg', title: 'Fairytale Garden & Little Tricycle', size: 'wide' },
+  { id: 4, category: 'kids', src: '/images/studio/shoot-04.jpg', title: 'Rockstar Stage & Mini Grand Piano', size: 'wide' },
+  { id: 5, category: 'baby', src: '/images/studio/shoot-05.jpg', title: 'Little Chef Rustic Kitchen Studio', size: 'wide' },
+  { id: 6, category: 'baby', src: '/images/studio/shoot-06.jpg', title: 'Newborn Serenity on Wicker Daybed', size: 'wide' },
+  { id: 7, category: 'baby', src: '/images/studio/shoot-07.jpg', title: 'Moon & Stars Celestial Cloud Sleigh', size: 'tall' },
+  { id: 8, category: 'kids', src: '/images/studio/shoot-08.jpg', title: 'Princess Vanity & Dressing Suite', size: 'wide' },
+  { id: 9, category: 'kids', src: '/images/studio/shoot-09.jpg', title: 'Little Wizard Magic Cauldron', size: 'tall' },
+  { id: 10, category: 'baby', src: '/images/studio/shoot-10.jpg', title: 'Autumn Swing with Golden Leaves', size: 'normal' },
+  { id: 11, category: 'baby', src: '/images/studio/shoot-11.jpg', title: 'Panda Bear Cuddles & Pink Teddy', size: 'wide' },
+  { id: 12, category: 'events', src: '/images/studio/shoot-12.jpg', title: 'Spooky Halloween Pumpkin Cottage', size: 'wide' },
+  { id: 13, category: 'family', src: '/images/studio/shoot-13.jpg', title: 'Little Krishna Divine Blessing Portrait', size: 'tall' },
+  { id: 14, category: 'birthday', src: '/images/studio/shoot-14.jpg', title: '1st Birthday Sailor Nautical Voyage', size: 'wide' },
+  { id: 15, category: 'baby', src: '/images/studio/shoot-15.jpg', title: 'Sweet Dreams in Pink Knit Bonnet', size: 'wide' },
+  { id: 16, category: 'birthday', src: '/images/studio/shoot-16.jpg', title: 'Birth Milestone Calendar & Time Clock', size: 'wide' },
+  { id: 17, category: 'events', src: '/images/studio/shoot-17.jpg', title: 'Little Pediatrician Clinic Setup', size: 'wide' },
+  { id: 18, category: 'birthday', src: '/images/studio/shoot-18.jpg', title: 'Sailor Boy Smiles in Coastal Harbor', size: 'wide' },
+  { id: 19, category: 'events', src: '/images/studio/shoot-19.jpg', title: 'Starlight Dreamer Moon Stage Props', size: 'wide' },
+  { id: 20, category: 'birthday', src: '/images/studio/shoot-20.jpg', title: 'Happy Birthday Sailor Clapping Moments', size: 'wide' },
+  { id: 21, category: 'baby', src: '/images/studio/shoot-21.jpg', title: 'Vintage Brass Tub Bubble Bath & Plumeria', size: 'wide' },
+  { id: 22, category: 'kids', src: '/images/studio/shoot-22.jpg', title: 'Little Doctor in Medical Scrubs', size: 'wide' },
+  { id: 23, category: 'family', src: '/images/studio/shoot-23.jpg', title: 'Traditional Silk Pattu Pavadai Portrait', size: 'wide' },
+  { id: 24, category: 'birthday', src: '/images/studio/shoot-24.jpg', title: '1st Birthday O-N-E Blocks Celebration', size: 'wide' },
+  { id: 25, category: 'kids', src: '/images/studio/shoot-25.jpg', title: 'Snow White Apple Orchard Carriage', size: 'wide' },
+  { id: 26, category: 'family', src: '/images/studio/shoot-26.jpg', title: 'Fine Art Family Hands & Tiny Fingers', size: 'wide' },
+  { id: 27, category: 'events', src: '/images/studio/shoot-27.jpg', title: 'Enchanted Fairytale Floral Cottage Setup', size: 'wide' },
 ];
 
 const categories = [
@@ -63,7 +78,7 @@ const Gallery = () => {
       {/* Masonry Grid */}
       <section className="section">
         <div className="container">
-          <div className="gallery-grid">
+          <div key={active} className="gallery-grid">
             {filtered.map(img => (
               <div
                 key={img.id}

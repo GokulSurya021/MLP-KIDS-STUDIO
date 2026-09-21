@@ -13,11 +13,11 @@ const serviceIcons = {
 };
 
 const serviceImages = {
-  'kids-photography': '/images/kids-fairytale-garden.jpg',
-  'baby-shoots': '/images/baby-clouds-moon.jpg',
-  'birthday-shoots': '/images/birthday-panda-one.jpg',
-  'family-portraits': '/images/baby-durga-blessing.jpg',
-  'events': '/images/studio-kitchen-setup.jpg'
+  'kids-photography': '/images/studio/shoot-01.jpg',
+  'baby-shoots': '/images/studio/shoot-06.jpg',
+  'birthday-shoots': '/images/studio/shoot-14.jpg',
+  'family-portraits': '/images/studio/shoot-26.jpg',
+  'events': '/images/studio/shoot-04.jpg'
 };
 
 const Services = () => {
@@ -79,7 +79,7 @@ const Services = () => {
                     </div>
                     <div className="service-meta-item">
                       <Camera size={16} />
-                      <span>{svcPackages.length} packages available</span>
+                      <span>Packages: Diamond, Gold & Silver</span>
                     </div>
                   </div>
                   <div className="service-detail-pkgs">
@@ -91,8 +91,8 @@ const Services = () => {
                     ))}
                   </div>
                   <div className="service-detail-actions">
-                    <Link to={`/packages?service=${svc.id}`} className="btn btn-gold">
-                      View Packages <ArrowRight size={16} />
+                    <Link to="/packages" className="btn btn-gold">
+                      Package Information <ArrowRight size={16} />
                     </Link>
                     <Link to="/book" className="btn btn-outline">Book Now</Link>
                   </div>

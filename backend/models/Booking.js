@@ -31,6 +31,15 @@ const bookingSchema = new mongoose.Schema({
     default: 'Pending'
   },
   advancePaid: { type: Boolean, default: false },
+  paymentDetails: {
+    gateway: { type: String, default: 'Razorpay' },
+    paymentId: { type: String },
+    orderId: { type: String },
+    method: { type: String, default: 'UPI_QR' },
+    utr: { type: String },
+    amount: { type: Number },
+    paidAt: { type: Date }
+  },
   cancellationReason: { type: String, default: '' },
   rescheduledFrom: { type: Date },
   createdAt: { type: Date, default: Date.now },
