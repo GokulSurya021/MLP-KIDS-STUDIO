@@ -63,15 +63,17 @@ photographers = load_json("photographers.json")
 booking_rules = load_json("booking_rules.json")
 
 # ─── Embedding Model Setup ──────────────────────────────────────────────────────
-# Lightweight embeddings for Render Free deployment
-# SentenceTransformer/PyTorch is intentionally disabled to keep RAM usage low.
-print("[INFO] Using lightweight hash-based embeddings...", flush=True)
-
-_embed_model = None
-EMBED_AVAILABLE = False
-EMBED_DIM = 256
-
-print("[OK] Lightweight embedding system ready.", flush=True)
+print("[INFO] Loading sentence-transformer model (all-MiniLM-L6-v2)...", flush=True)
+try:
+    from sentence_transformers import SentenceTransformer
+    _embed_model = SentenceTransformer("all-MiniLM-L6-v2")
+    EMBED_DIM = 384
+    EMBED_AVAILABLE = True
+    print("[OK] Embedding model loaded successfully.", flush=True)
+except Exception as e:
+    print(f"[WARN] Embedding model unavailable: {e}. Falling back to local hash-based vectors.", flush=True)
+    EMBED_AVAILABLE = False
+    EMBED_DIM = 256
 
 def local_hash_embedding(text: str) -> List[float]:
     """Deterministic dense vector from text using character n-gram hashing (fallback)."""
@@ -196,7 +198,10 @@ def build_kb_chunks() -> List[Dict]:
 
     # Each service as a separate chunk
     for svc in services:
-        pkg_list = [p for p in packages if p["service_id"] == svc["id"]]
+        pkg_list = [
+            p for p in packages
+            if p.get("service_id") in (None, svc["id"])
+       ]
         pkg_text = "\n".join(
             f"  - {p['name']}: ₹{p['price']} | Features: {', '.join(p['features'])}"
             for p in pkg_list
@@ -215,7 +220,10 @@ def build_kb_chunks() -> List[Dict]:
     # Packages overview
     pkg_overview = "All Packages — Pricing Summary:\n"
     for svc in services:
-        pkgs = [p for p in packages if p["service_id"] == svc["id"]]
+        pkgs = [
+            p for p in packages
+            if p.get("service_id") in (None, svc["id"])
+        ]
         if pkgs:
             pkg_overview += f"\n{svc['name']}:\n"
             for p in pkgs:
@@ -231,7 +239,10 @@ def build_kb_chunks() -> List[Dict]:
 
     # Each package as its own chunk
     for p in packages:
-        svc_name = next((s["name"] for s in services if s["id"] == p["service_id"]), p["service_id"])
+        svc_name = next(
+            (s["name"] for s in services if s["id"] == p.get("service_id")),
+            p.get("service_name", "All Services")
+        )
         chunks.append({
             "id": f"pkg_{p['id']}",
             "text": (
