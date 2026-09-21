@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import { savePaymentToFirestore } from '../firebase/firestoreService';
 import './PaymentScannerModal.css';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';;
 
 // ── Load Razorpay checkout.js dynamically ────────────────────────────────────
 const loadRazorpayScript = () =>
