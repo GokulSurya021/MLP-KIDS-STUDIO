@@ -274,7 +274,7 @@ def build_kb_chunks() -> List[Dict]:
     })
 
     # Photographers
-    photogs_text = "Our Team of Photographers at MLP Kids Studio:\n"
+    photogs_text = "Lead Photographer at MLP Kids Studio:\n"
     for p in photographers:
         photogs_text += (
             f"- Name: {p['name']} | Phone: {p['phone']} | "
@@ -508,7 +508,7 @@ def rag_chat_answer(question: str) -> str:
         return (f"📅 **How to Book:**\n\n"
                 f"1. Go to our website → click **'Book a Shoot'**\n"
                 f"2. Choose your service & package\n"
-                f"3. Select a photographer (or 'Any Photographer')\n"
+                f"3. Studio photographer: **Lokesh**\n"
                 f"4. Pick your date & time\n\n"
                 f"**Rules:**\n"
                 f"- Advance payment: ₹3,000\n"

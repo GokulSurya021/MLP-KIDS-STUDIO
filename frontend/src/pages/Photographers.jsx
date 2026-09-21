@@ -6,86 +6,80 @@ import './Photographers.css';
 const Photographers = () => {
   const [photographers, setPhotographers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
 
   useEffect(() => {
     api.get('/photographers')
-      .then(r => setPhotographers(r.data.photographers))
+      .then(r => setPhotographers(r.data.photographers || []))
+      .catch(() => setPhotographers([{
+        id: 'lokesh',
+        name: 'Lokesh',
+        phone: '7207209993',
+        specialization: 'Photography & Video Editing',
+        location: 'Samalkot',
+        available: true
+      }]))
       .finally(() => setLoading(false));
   }, []);
 
-  const locations = ['all', ...new Set(photographers.map(p => p.location))];
-  const filtered = filter === 'all' ? photographers : photographers.filter(p => p.location === filter);
-
-  const avatarColors = ['#D4AF37', '#B8960C', '#C9A96E', '#DAA520', '#F0D060', '#B8860B'];
-
   if (loading) return <div className="page-loader"><div className="spinner" /></div>;
+
+  const lokesh = photographers.find(p => p.id === 'lokesh') || photographers[0] || {
+    id: 'lokesh',
+    name: 'Lokesh',
+    phone: '7207209993',
+    specialization: 'Photography & Video Editing',
+    location: 'Samalkot',
+    available: true
+  };
 
   return (
     <div className="photographers-page">
       {/* Header */}
       <div className="page-hero">
         <div className="container page-hero-content">
-          <span className="section-label">Meet the Team</span>
-          <h1 className="page-hero-title">Our <span className="text-gradient">Photographers</span></h1>
-          <p className="page-hero-sub">A talented team of professional photographers across Andhra Pradesh.</p>
+          <span className="section-label">Lead Photographer</span>
+          <h1 className="page-hero-title">Our <span className="text-gradient">Photographer</span></h1>
+          <p className="page-hero-sub">Master photographer and creative video editor capturing timeless smiles at MLP Kids Studio.</p>
         </div>
       </div>
 
-      {/* Filter */}
-      <div className="gallery-filter-wrap">
-        <div className="container">
-          <div className="gallery-filters">
-            {locations.map(loc => (
-              <button
-                key={loc}
-                className={`gallery-filter-btn ${filter === loc ? 'active' : ''}`}
-                onClick={() => setFilter(loc)}
-              >
-                {loc === 'all' ? 'All Locations' : loc}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Photographers Grid */}
+      {/* Photographer Showcase */}
       <section className="section">
         <div className="container">
-          <div className="photog-grid">
-            {filtered.map((p, i) => (
-              <div key={p.id} className="photog-card">
-                <div
-                  className="photog-avatar"
-                  style={{ background: `linear-gradient(135deg, ${avatarColors[i % avatarColors.length]}, ${avatarColors[(i + 2) % avatarColors.length]})` }}
-                >
-                  {p.name[0]}
-                </div>
-                <h3 className="photog-name">{p.name}</h3>
-                <div className="photog-spec">
-                  {p.specialization.includes('Video') ? (
-                    <><Video size={13} /> {p.specialization}</>
-                  ) : (
-                    <><Camera size={13} /> {p.specialization}</>
-                  )}
-                </div>
-                <div className="photog-location">
-                  <MapPin size={13} />
-                  {p.location}
-                </div>
-                <a href={`tel:${p.phone}`} className="photog-phone">
-                  <Phone size={13} />
-                  {p.phone}
-                </a>
+          <div style={{ maxWidth: '540px', margin: '0 auto' }}>
+            <div className="photog-card" style={{ padding: '36px 28px' }}>
+              <div
+                className="photog-avatar"
+                style={{
+                  width: '90px',
+                  height: '90px',
+                  fontSize: '2.2rem',
+                  background: 'linear-gradient(135deg, #D4AF37, #DAA520)',
+                  boxShadow: '0 8px 24px rgba(212,175,55,0.4)'
+                }}
+              >
+                {lokesh.name[0]}
               </div>
-            ))}
+              <h2 className="photog-name" style={{ fontSize: '1.5rem', marginTop: '6px' }}>{lokesh.name}</h2>
+              <div className="photog-spec" style={{ fontSize: '0.95rem' }}>
+                <Video size={16} /> <Camera size={16} /> {lokesh.specialization}
+              </div>
+              <div className="photog-location" style={{ fontSize: '0.9rem' }}>
+                <MapPin size={15} />
+                {lokesh.location}, Andhra Pradesh
+              </div>
+              <a href={`tel:${lokesh.phone}`} className="photog-phone" style={{ fontSize: '0.95rem', padding: '9px 22px' }}>
+                <Phone size={15} />
+                {lokesh.phone}
+              </a>
+            </div>
           </div>
 
           {/* Book CTA */}
-          <div className="photog-cta">
-            <h3>Choose Your Photographer</h3>
-            <p>Select a specific photographer when booking, or let us assign the best available photographer for your session.</p>
-            <a href="/book" className="btn btn-gold">Book a Shoot</a>
+          <div className="photog-cta" style={{ maxWidth: '640px', margin: '48px auto 0' }}>
+            <h3>Book Your Session with Lokesh</h3>
+            <p>Every session at MLP Kids Studio is personally crafted and captured to give your family unforgettable memories.</p>
+            <a href="/book" className="btn btn-gold">Book a Shoot Now</a>
           </div>
         </div>
       </section>

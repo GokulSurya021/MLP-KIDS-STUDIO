@@ -23,7 +23,7 @@
 ### 🛡️ Private Studio Owner Management Center
 - **Strict Authorization**: Admin portal exclusively locked down to studio owner (`gokulsurya021@gmail.com`).
 - **One-Click Shoot Confirmation**: Confirm pending bookings and acknowledge ₹500 advance payments in real time.
-- **Photographer Assignment**: Assign shoots to any of the 11 studio photographers (e.g. Lokesh, Ajay, Abhi, Arun).
+- **Photographer Assignment**: Assign shoots to lead photographer Lokesh.
 - **Executive Analytics**: Real-time KPI tiles for pending orders, confirmed sessions, total revenue, and photographer workload.
 
 ---

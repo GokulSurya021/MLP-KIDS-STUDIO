@@ -50,7 +50,7 @@ const BookShoot = () => {
 
   // Form State
   const [selectedPackageId, setSelectedPackageId] = useState(preselectedPackage || 'diamond');
-  const [selectedPhotographerId, setSelectedPhotographerId] = useState('any');
+  const [selectedPhotographerId, setSelectedPhotographerId] = useState('lokesh');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [customerName, setCustomerName] = useState(user?.name || '');
@@ -357,39 +357,23 @@ const BookShoot = () => {
 
             {/* Photographer Selection */}
             <div className="photographer-selection-section">
-              <h3 className="sub-heading">Select Preferred Photographer (Optional)</h3>
-              <p className="sub-desc">Choose a dedicated photographer or let our studio assign the best available expert.</p>
+              <h3 className="sub-heading">Studio Photographer</h3>
+              <p className="sub-desc">Your session will be personally captured and curated by our lead photographer.</p>
 
-              <div className="photog-select-grid">
+              <div className="photog-select-grid" style={{ gridTemplateColumns: '1fr', maxWidth: '440px' }}>
                 <div
-                  className={`photog-select-card ${selectedPhotographerId === 'any' ? 'selected' : ''}`}
-                  onClick={() => setSelectedPhotographerId('any')}
+                  className="photog-select-card selected"
+                  style={{ cursor: 'default' }}
                 >
-                  <div className="photog-avatar-placeholder">
-                    <Camera className="w-6 h-6 text-gold" />
+                  <div className="photog-avatar-placeholder" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(212, 175, 55, 0.15)', borderRadius: '50%', width: '44px', height: '44px' }}>
+                    <span style={{ fontWeight: 700, color: '#D4AF37', fontSize: '1.1rem' }}>L</span>
                   </div>
                   <div>
-                    <div className="photog-name font-semibold">Any Available Photographer</div>
-                    <div className="photog-spec text-muted text-xs">Recommended • Fastest Confirmation</div>
+                    <div className="photog-name font-semibold">Lokesh (Lead Photographer)</div>
+                    <div className="photog-spec text-gold text-xs">Photography & Video Editing</div>
+                    <div className="photog-location text-muted text-xs">Samalkot Studio • Included</div>
                   </div>
                 </div>
-
-                {photographers.map(p => (
-                  <div
-                    key={p.id}
-                    className={`photog-select-card ${selectedPhotographerId === p.id ? 'selected' : ''}`}
-                    onClick={() => setSelectedPhotographerId(p.id)}
-                  >
-                    <div className="photog-avatar-placeholder" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(212, 175, 55, 0.15)', borderRadius: '50%', width: '44px', height: '44px' }}>
-                      <span style={{ fontWeight: 700, color: '#D4AF37', fontSize: '1.1rem' }}>{p.name?.[0]?.toUpperCase()}</span>
-                    </div>
-                    <div>
-                      <div className="photog-name font-semibold">{p.name}</div>
-                      <div className="photog-spec text-gold text-xs">{p.specialization}</div>
-                      <div className="photog-location text-muted text-xs">{p.location}</div>
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
 

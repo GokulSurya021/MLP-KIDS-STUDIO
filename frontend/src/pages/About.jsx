@@ -5,7 +5,7 @@ import './About.css';
 const milestones = [
   { year: '2026', title: 'Grand Opening', desc: 'MLP Kids Studio officially launched in Samalkot, Andhra Pradesh.' },
   { year: '2026', title: '20+ Themed Sets', desc: 'Built 20+ authentic, handcrafted physical sets with gentle baby-friendly studio lighting.' },
-  { year: '2026', title: 'Specialized Team', desc: 'Assembled a team of 11 skilled child and family photographers across Andhra Pradesh.' },
+  { year: '2026', title: 'Lead Photographer', desc: 'Led by professional photographer & video editor Lokesh in Samalkot.' },
 ];
 
 const values = [
@@ -52,7 +52,7 @@ const About = () => {
                 Our studio is designed to be a warm, welcoming space where children feel free to be themselves — whether that means giggling uncontrollably, exploring props, or simply being their adorable selves. We believe the most beautiful photographs are the authentic ones.
               </p>
               <p style={{ marginTop: '16px' }}>
-                With a team of 11 skilled photographers spread across Samalkot, Rajahmundry, Kakinada, Peddapuram, and beyond — we bring professional photography right to your community.
+                Led by our dedicated lead photographer and video editor Lokesh in Samalkot, we bring passionate, professional photography and cinematic memories right to your family.
               </p>
               <div className="about-business-info">
                 <div className="about-info-item">

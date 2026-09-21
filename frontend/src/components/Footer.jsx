@@ -45,7 +45,6 @@ const Footer = () => {
                 { to: '/packages', label: 'Packages' },
                 { to: '/gallery', label: 'Gallery' },
                 { to: '/about', label: 'About Us' },
-                { to: '/photographers', label: 'Our Team' },
                 { to: '/contact', label: 'Contact' },
                 { to: '/payment', label: '💳 Pay Advance (Razorpay)' },
               ].map(({ to, label }) => (

@@ -66,7 +66,6 @@ const Navbar = () => {
     { to: '/services', label: 'Services' },
     { to: '/packages', label: 'Packages' },
     { to: '/gallery', label: 'Gallery' },
-    { to: '/photographers', label: 'Team' },
     { to: '/about', label: 'About' },
     { to: '/contact', label: 'Contact' },
   ];

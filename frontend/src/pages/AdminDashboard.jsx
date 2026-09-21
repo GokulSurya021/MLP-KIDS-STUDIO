@@ -29,18 +29,7 @@ import {
 import './AdminDashboard.css';
 
 const PHOTOGRAPHERS = [
-  { id: 'any', name: 'Any Photographer' },
   { id: 'lokesh', name: 'Lokesh (Samalkot)' },
-  { id: 'ajay', name: 'Ajay (Samalkot)' },
-  { id: 'abhi', name: 'Abhi (Rajahmundry)' },
-  { id: 'arun', name: 'Arun (Kakinada)' },
-  { id: 'gowtham', name: 'Gowtham (Peddapuram)' },
-  { id: 'siva', name: 'Siva (Samalkot)' },
-  { id: 'vinay', name: 'Vinay (Kakinada)' },
-  { id: 'harsha', name: 'Harsha (Rajahmundry)' },
-  { id: 'sai', name: 'Sai (Peddapuram)' },
-  { id: 'kiran', name: 'Kiran (Samalkot)' },
-  { id: 'suresh', name: 'Suresh (Kakinada)' },
 ];
 
 const AdminDashboard = () => {

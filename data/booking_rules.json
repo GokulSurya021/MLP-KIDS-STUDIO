@@ -10,7 +10,7 @@
     "close": "19:00",
     "days": "Every day"
   },
-  "photographer_options": "Customer can select a specific photographer or choose 'Any Photographer'",
+  "photographer_options": "Shoots are captured by lead photographer Lokesh",
   "multiple_bookings_per_day": true,
   "statuses": ["Pending", "Confirmed", "Cancelled", "Completed"]
 }
