@@ -4,7 +4,7 @@
  * native modal (UPI, Cards, Netbanking, QR), and verifies signature.
  */
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api';';
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 export const loadRazorpayScript = () => {
   return new Promise((resolve) => {
